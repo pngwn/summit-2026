@@ -7,6 +7,7 @@
 	// letters take the frame's linen knock, the Svelte letters the linen plate,
 	// both with a ragged edge. The line bird perches on the heading's stave, at
 	// the right margin (lib/experiments/penguin/perch/title)
+	import type { Snippet } from 'svelte';
 	import Perch from './Perch.svelte';
 	import Staves from './Staves.svelte';
 	import { covers, read, type Lit } from './reading.ts';
@@ -15,9 +16,11 @@
 	interface Props {
 		/** a heading's PFM source, the typeset form is what it renders to */
 		source?: string;
+		/** set on the wordmark's line after it (the deck's addition: the edition) */
+		after?: Snippet;
 	}
 
-	let { source = '# md{"sv"}ex' }: Props = $props();
+	let { source = '# md{"sv"}ex', after }: Props = $props();
 
 	const reading = $derived(read(source));
 	let lit = $state<Lit | null>(null);
@@ -41,7 +44,7 @@
 			style:--wash-voice="var(--{lit?.voice ?? 'block'})"
 		>
 			<span class="ink rag">{letter.char}</span>
-		</span>{/each}
+		</span>{/each}{@render after?.()}
 </h1>
 
 <style>

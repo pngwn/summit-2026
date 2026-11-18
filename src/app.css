@@ -122,7 +122,7 @@ button {
 .scene :is(h1, h2, h3),
 .year,
 .notation .cell > p:first-child,
-.wordmark {
+.specimen .wordmark {
 	font-family: var(--face-display);
 	font-optical-sizing: auto;
 }
@@ -262,7 +262,7 @@ figcaption {
 	line-height: 0.98;
 }
 
-.perch {
+.soliloquy .perch {
 	margin-top: calc(4 * var(--unit));
 	height: 1px;
 	background: var(--hairline);
@@ -270,7 +270,7 @@ figcaption {
 	position: relative;
 }
 
-.perch svg {
+.soliloquy .perch svg {
 	width: calc(4.4 * var(--unit));
 	aspect-ratio: 1;
 	position: absolute;
@@ -292,13 +292,13 @@ figcaption {
 	font-size: calc(9.1 * var(--unit));
 }
 
-.score {
+.specimen .score {
 	font: calc(2.7 * var(--unit)) / 1.15 var(--face-mono);
 	width: calc(var(--cells) * 0.9em);
 	margin-block: 1.2em 0.1em;
 }
 
-.score code {
+.specimen .score code {
 	letter-spacing: 0.3em;
 	white-space: pre;
 	font-family: inherit;
@@ -308,16 +308,16 @@ figcaption {
 	mask-composite: var(--riso-composite);
 }
 
-.score b {
+.specimen .score b {
 	font-weight: 400;
 }
 
-.phrase-row {
+.specimen .phrase-row {
 	position: relative;
 	height: 0.9em;
 }
 
-.phrase {
+.specimen .phrase {
 	position: absolute;
 	top: 0;
 	left: calc(100% * var(--from) / var(--cells));
@@ -325,8 +325,8 @@ figcaption {
 	border-top: 1.5px solid var(--tone);
 }
 
-.phrase::before,
-.phrase::after {
+.specimen .phrase::before,
+.specimen .phrase::after {
 	content: '';
 	position: absolute;
 	top: -0.13em;
@@ -334,11 +334,11 @@ figcaption {
 	border-left: 1.5px solid var(--tone);
 }
 
-.phrase::after {
+.specimen .phrase::after {
 	right: 0;
 }
 
-.phrase i {
+.specimen .phrase i {
 	position: absolute;
 	left: 0.2em;
 	bottom: 0.18em;
@@ -346,18 +346,18 @@ figcaption {
 	font: italic 500 0.52em / 1 var(--face-display);
 }
 
-.wordmark {
+.specimen .wordmark {
 	width: 100%;
 	display: grid;
 	justify-items: center;
 }
 
-.wordmark h2 {
+.specimen .wordmark h2 {
 	font-size: calc(18 * var(--unit));
 	letter-spacing: -0.075em;
 }
 
-.wordmark .score {
+.specimen .wordmark .score {
 	font-size: calc(4.6 * var(--unit));
 	margin-top: 0.7em;
 }
@@ -646,7 +646,7 @@ button[aria-pressed='true'] {
 		animation: print-in 0.32s ease-out both;
 	}
 
-	.scene .phrase {
+	.specimen .phrase {
 		animation: rule-in 0.46s ease-out both;
 		transform-origin: left;
 	}
@@ -783,11 +783,11 @@ button[aria-pressed='true'] {
 		font-size: 4cqw;
 	}
 
-	.wordmark h2 {
+	.specimen .wordmark h2 {
 		font-size: 24cqw;
 	}
 
-	.score {
+	.specimen .score {
 		font-size: min(4.4cqw, 1.5rem);
 	}
 }
