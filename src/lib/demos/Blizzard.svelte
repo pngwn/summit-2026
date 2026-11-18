@@ -8,9 +8,10 @@
 	target glyph, when the flip started, and its in-between glyph. The display pass draws
 	each pin from a glyph atlas, squashing it shut and open again mid-flip.
 
-	Snow falls on the slant in three depths: far flakes small, many and slow, near ones
-	larger and quicker. The wind gusts on a slow cycle, slanting the veils across the sky and
-	lifting spindrift off the ground. Pins with a flake on them crossfade rather than flip,
+	Snow drifts slowly sideways in three depths, sinking a little as it goes: far flakes
+	small and many, near ones larger. Nothing falls fast, which on a projector can make a
+	room queasy. The wind swells on a slow cycle, thickening the veils across the sky and
+	the spindrift over the ground, which stream past just as slowly. Pins with a flake on them crossfade rather than flip,
 	so the snow moves smoothly. Reduced motion holds one still frame.
 -->
 <script lang="ts">
@@ -83,20 +84,23 @@ float vnoise(vec2 p) {
 }
 float fbm(vec2 p) { return vnoise(p) * .57 + vnoise(p * 2.03 + vec2(17.1, -3.7)) * .29 + vnoise(p * 4.1 + vec2(-9.2, 5.3)) * .14; }
 
-// a flake on this pin, nearest depth first; the wind slants them and speeds them up
+// a flake on this pin, nearest depth first. Flakes drift slowly sideways, sinking a
+// little as they go: no fast falling, which on a projector can make a room queasy.
+// Each depth is a set of shallow lanes running left to right and down; a flake slides
+// along its lane, bobbing a row up or down now and then
 bool flakes(float c, float r) {
   for (int k = 2; k >= 0; k--) {
     float fk = float(k);
-    float slope = (.45 + fk * .25) * (.55 + .9 * uWind);
-    float speed = (.07 + fk * .07) * (.75 + .6 * uWind);
-    float wob = sin(r * (.19 + fk * .05) + uT * (1.1 + fk * .4) + fk * 2.1) * (.5 + fk * .3);
-    float lane = floor(c - r * slope * uAspect * .6 + wob);
-    float dens = (k == 0 ? .95 : k == 1 ? .6 : .3) * (.7 + .5 * uWind);
+    float sink = .05 + fk * .025;                       // rows dropped per column travelled
+    float speed = (.018 + fk * .012) * (.9 + .2 * uWind); // screen widths a second
+    float bob = sin(c * (.07 + fk * .02) + uT * (.35 + fk * .1) + fk * 2.1) * (.45 + fk * .15);
+    float lane = floor(r - c * sink + bob);
+    float dens = k == 0 ? .9 : k == 1 ? .55 : .3;
     if (h2(vec2(lane, 7. + fk), 0.) > dens) continue;
-    float period = uGrid.y * ((k == 0 ? .12 : k == 1 ? .2 : .32) + h2(vec2(lane, 3. + fk), 0.) * .5);
-    float y = mod(r - uT * speed * uGrid.y - h2(vec2(lane, 11. + fk), 0.) * 999., period);
-    if (y < 1.) {
-      float pick = h2(vec2(lane, 19. + fk), 0.);
+    float period = uGrid.x * ((k == 0 ? .1 : k == 1 ? .18 : .3) + h2(vec2(lane, 3. + fk), 0.) * .45);
+    float x = mod(c - uT * speed * uGrid.x - h2(vec2(lane, 11. + fk), 0.) * 999., period);
+    if (x < 1.) {
+      float pick = h2(vec2(lane, floor((c - uT * speed * uGrid.x) / period) + 19. + fk), 0.);
       if (k == 0) { TG = R_FAR[int(pick * 2.)]; TL = 6. + pick * 2.; }
       else if (k == 1) { TG = R_MID[int(pick * 3.)]; TL = 9. + pick * 2.; }
       else { TG = R_NEAR[int(pick * 2.)]; TL = 12. + pick * 3.; }
@@ -110,7 +114,8 @@ void scene(float c, float r) {
   float nx = c / uGrid.x, ny = r / uGrid.y;
   // a per-pin threshold, random rather than ordered, so nothing lines up into rows
   float dith = h2(vec2(c, r), 5.);
-  float slope = (.5 + .9 * uWind) * .35;
+  // a fixed slant: a gust thickens the veils rather than shearing the whole sky
+  float slope = .3;
   // the far ridge, low and broken, just above the horizon
   float ridge = HZ - .012 - fbm(vec2(nx * 3.1, 1.7)) * .06 * smoothstep(.0, .25, fbm(vec2(nx * 1.3, 4.2)));
 
@@ -118,7 +123,7 @@ void scene(float c, float r) {
     float k = ny / ridge;
     // veils of driven snow: noise stretched along the wind's slant and streaming with it
     vec2 q = vec2(nx - ny * slope, ny + nx * .12);
-    float veil = fbm(vec2(q.x * 1.6 - uT * (.05 + .2 * uWind), q.y * 9.));
+    float veil = fbm(vec2(q.x * 1.6 - uT * (.02 + .05 * uWind), q.y * 9.));
     veil = smoothstep(.46, .82, veil) * (.45 + .7 * uWind);
     if (veil > dith * .9 + .08) {
       TG = R_VEIL[clamp(int(veil * 4. + h2(vec2(c, r), floor(uT * 3.)) * 2.), 0, 5)];
@@ -147,7 +152,7 @@ void scene(float c, float r) {
   float dep = 1. / (ny - HZ + .03);
   float drift = fbm(vec2(nx * 3.5 / (.35 + z), dep * .12));
   float ridges = .5 + .5 * sin(dep * 1.3 + nx * 2.4 + drift * 5.);
-  float spin = fbm(vec2((nx - ny * slope * .4) * 2.2 * (1. + z) - uT * (.08 + .45 * uWind), dep * .3 + uT * .04));
+  float spin = fbm(vec2((nx - ny * slope * .4) * 2.2 * (1. + z) - uT * (.03 + .1 * uWind), dep * .3 + uT * .015));
   spin = smoothstep(.48, .85, spin) * (.3 + .8 * uWind) * (1. - z * .45);
   if (spin > dith * .8 + .08) { TG = R_VEIL[clamp(int(spin * 4. + h2(vec2(c, r), floor(uT * 4.)) * 2.), 0, 5)]; TL = 3.5 + spin * 6.; return; }
   // bare snow, with the crest of a ridge marked here and there
