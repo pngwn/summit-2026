@@ -1,15 +1,14 @@
 import { browser } from '$app/env';
 import { goto } from '$app/navigation';
-import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import { clamp_step, type Position } from '#lib/deck.ts';
-import { step_from_hash } from '#lib/keys.ts';
+import { href, step_from_hash } from '#lib/keys.ts';
 import { broadcast, on_remote_goto } from '#lib/sync.ts';
 
 type Route = '/[slide]' | '/presenter/[slide]';
 
 /**
- * The deck's position for a view (audience or presenter): the slide comes from the route,
+ * The deck's position for a view (audience or presenter): the scene comes from the route,
  * the step from the URL's hash, so a reload or a shared link lands on the same step.
  * `go` moves there and tells the other window; the other window's moves are followed.
  * Call it during component init, since it registers an effect.
@@ -31,9 +30,9 @@ export function deck_nav(route: Route, get_n: () => number) {
 	function go(to: Position, from_remote = false) {
 		if (to.n === pos.n && to.step === pos.step) return;
 		if (!from_remote) broadcast(to);
-		const href = resolve(route, { slide: String(to.n) }) + (to.step ? `#${to.step}` : '');
-		// steps within a slide replace the history entry, so back goes to the previous slide
-		goto(href, { reset: false, replace: to.n === pos.n });
+		// every move replaces the history entry, so the browser's back leaves the deck
+		// rather than walking back through it
+		goto(href(route, to), { reset: false, replace: true });
 	}
 
 	$effect(() => on_remote_goto((to) => go(to, true)));

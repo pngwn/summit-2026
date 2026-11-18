@@ -9,15 +9,19 @@ export default defineConfig({
 			// registers both extensions with SvelteKit too, no need to repeat them below
 			extensions: ['.md', '.svx'],
 
-			// every slide is wrapped in a template; pick one per slide with `template:` in frontmatter
+			// every scene is wrapped in a template, its layout family: pick one per scene with
+			// `template:` in frontmatter
 			templates: {
-				default: '#lib/templates/Slide.svelte',
-				title: '#lib/templates/TitleSlide.svelte',
-				section: '#lib/templates/SectionSlide.svelte',
-				statement: '#lib/templates/StatementSlide.svelte',
-				pair: '#lib/templates/PairSlide.svelte',
-				diff: '#lib/templates/DiffSlide.svelte'
+				default: '#lib/templates/Plate.svelte',
+				plate: '#lib/templates/Plate.svelte',
+				cover: '#lib/templates/Cover.svelte',
+				verse: '#lib/templates/Verse.svelte',
+				specimen: '#lib/templates/Specimen.svelte',
+				diff: '#lib/templates/Diff.svelte'
 			},
+
+			// the directives scenes are written with: :::pair, :::sample[…], ::figure …
+			components: '#lib/markdown.ts',
 
 			// ```math fences and $`inline`$ math, rendered to MathML by Temml at build time
 			math: {},

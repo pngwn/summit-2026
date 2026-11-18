@@ -1,5 +1,5 @@
 <!--
-	The presenter view: current + next slide, speaker notes, and a timer.
+	The presenter view: current scene + what → shows next, speaker notes, and a timer.
 	Open it with `p` from the audience view; both windows stay in sync.
 -->
 <script lang="ts">
@@ -37,10 +37,10 @@
 </script>
 
 <svelte:head>
-	<title>Presenter · {slide.meta.title ?? `Slide ${data.n}`}</title>
+	<title>Presenter · {slide.name}</title>
 </svelte:head>
 
-<svelte:window onkeydown={(e) => handle_deck_key(e, nav.pos, nav.go)} />
+<svelte:window onkeydown={(e) => handle_deck_key(e, { pos: nav.pos, go: nav.go })} />
 
 <main>
 	<div class="current">
@@ -58,16 +58,18 @@
 
 		<div class="status">
 			<span>
-				{data.n} / {total}{#if slide.steps > 1}&ensp;·&ensp;step {nav.pos.step + 1} of {slide.steps}{/if}
+				{slide.chapter} · {data.n} / {total}{#if slide.steps > 1}&ensp;·&ensp;step {nav.pos.step +
+						1} of {slide.steps}{/if}
 			</span>
 			<button title="Reset timer" onclick={() => (started = now = Date.now())}>{elapsed}</button>
 		</div>
 
 		<div class="notes">
-			{#if slide.meta.notes}
-				{slide.meta.notes}
+			<h2>{slide.name}</h2>
+			{#if slide.notes}
+				{slide.notes}
 			{:else}
-				<span class="empty">No notes for this slide.</span>
+				<span class="empty">No notes for this scene.</span>
 			{/if}
 		</div>
 	</aside>
@@ -88,6 +90,7 @@
 
 	.current,
 	.next {
+		position: relative;
 		border-radius: 8px;
 		overflow: hidden;
 		outline: 1px solid #333;
@@ -122,8 +125,9 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: 1em;
 		font-family: var(--face-mono);
-		font-size: 32px;
+		font-size: 22px;
 	}
 
 	.status button {
@@ -139,6 +143,12 @@
 		white-space: pre-wrap;
 		font-size: 24px;
 		line-height: 1.5;
+	}
+
+	.notes h2 {
+		margin: 0 0 0.4em;
+		font: 500 32px / 1.1 var(--face-display);
+		white-space: normal;
 	}
 
 	.empty {
