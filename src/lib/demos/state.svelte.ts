@@ -4,7 +4,5 @@ export const demos = $state({
 	/** the town the bird is at, on the territory map */
 	town: 0,
 	/** the package manager the live example substitutes */
-	pm: 'pnpm',
-	/** how many characters of the stream have arrived */
-	stream: 0
+	pm: 'pnpm'
 });

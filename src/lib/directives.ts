@@ -12,4 +12,4 @@ export { default as figure } from './directives/Figure.svelte';
 export { default as columns } from './directives/Columns.svelte';
 export { default as routemap } from './demos/RouteMap.svelte';
 export { default as live } from './demos/Live.svelte';
-export { default as stream } from './demos/Stream.svelte';
+export { default as stream } from './stream/StreamScrub.svelte';
