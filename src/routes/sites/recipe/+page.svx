@@ -1,0 +1,29 @@
+---
+template: recipe
+title: Pancakes for a cold morning
+subtitle: Thick, soft, and quick enough to make before anyone else is awake.
+serves: 4
+time: 25 minutes
+---
+
+:::steps
+### Make the batter
+Whisk :ingredient[plain flour](qty=200, unit=g), :ingredient[caster sugar](qty=1, unit=tbsp),
+:ingredient[baking powder](qty=2, unit=tsp) and :ingredient[salt](qty=1, unit=pinch) in a big bowl.
+
+### Bring it together
+Beat :ingredient[eggs](qty=2) into :ingredient[milk](qty=300, unit=ml) with
+:ingredient[butter](qty=30, unit=g), melted. Pour it into the flour and stir until _just_
+combined. Lumps are fine; a smooth batter is a tough pancake.
+
+### Rest
+Leave it for ten minutes, while the pan heats. Go and wake someone.
+
+### Cook
+Melt a little more :ingredient[butter](qty=10, unit=g) in the pan. A ladle of batter at a
+time, two minutes a side, until bubbles break on top and the edges set.
+
+### Serve
+Stack them high, with :ingredient[maple syrup](qty=4, unit=tbsp) and
+:ingredient[blueberries](qty=150, unit=g).
+:::

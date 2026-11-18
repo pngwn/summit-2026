@@ -383,6 +383,10 @@ figcaption {
 	grid-template-columns: 3fr 2fr;
 }
 
+.pair.narrow {
+	grid-template-columns: 2fr 3fr;
+}
+
 /* pieces stacked in one sample, a fence then another or then what it renders */
 .sample > :not(.label) + :not(.label) {
 	margin-top: calc(1.8 * var(--unit)) !important;
@@ -675,6 +679,10 @@ button[aria-pressed='true'] {
 	--code-size: 1.65;
 }
 
+.plate.tiny {
+	--code-size: 1.4;
+}
+
 /* the steps plugin's output (src/lib/plugins/steps), numbered in the deck's mono */
 .steps {
 	counter-reset: step;
@@ -794,7 +802,8 @@ button[aria-pressed='true'] {
 	}
 
 	.pair,
-	.pair.wide {
+	.pair.wide,
+	.pair.narrow {
 		grid-template-columns: 1fr;
 		gap: 4cqh;
 	}

@@ -1,0 +1,50 @@
+---
+template: journal
+title: Going south
+subtitle: A very tiny penguin, a long way from home, takes the long way back.
+---
+
+:::travel[Punta Tombo](coords="-44.05,-65.22")
+Half a million Magellanic penguins, and every one of them _sure_ they had seen me before.
+I hadn't the heart to tell them we'd never met.
+
+The wind here doesn't blow so much as *lean*. I leaned back.
+:::
+
+:::travel[Puerto Deseado](coords="-47.75,-65.90")
+A river that the sea walked into and never left. Rockhopper cousins on the islands,
+shouting about the weather, which was, to be fair, remarkable.
+
+Things packed so far:
+
+- one map, slightly wet
+- one plan, slightly wetter
+:::
+
+:::travel[Ushuaia](coords="-54.80,-68.30")
+The end of the world has a post office. I sent a card to myself, care of the South Pole,
+_to be collected_.
+
+Boats leave from here for the ice. I found one going my way, and a captain who didn't
+ask questions of small passengers.
+:::
+
+:::travel[Volunteer Point](coords="-51.48,-57.83")
+A detour east, because the captain had a sister. White sand, and king penguins standing
+about like a committee that has forgotten its agenda.
+
+I was elected to nothing. I left before they could change their minds.
+:::
+
+:::travel[Deception Island](coords="-62.97,-60.65")
+A volcano you sail _into_, through a gap called Neptune's Bellows. The beach steams.
+Chinstraps everywhere, each one certain it is the main character.
+
+Close now. The water tastes of home.
+:::
+
+:::travel[Port Lockroy](coords="-64.83,-63.49")
+Gentoos, a hut, and a little red post office, where a card was waiting for me.
+
+It said: *Welcome home. You took your time.*
+:::

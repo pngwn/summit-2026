@@ -2,7 +2,9 @@ import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
 import * as svx from '@twinkleplop/mdsvex';
 import { mdsvex } from 'mdsvex';
+import { ingredients } from './src/lib/plugins/ingredients/index.ts';
 import { steps } from './src/lib/plugins/steps/index.ts';
+import { travel } from './src/lib/plugins/travel/index.ts';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -21,6 +23,8 @@ export default defineConfig({
 				specimen: '#lib/templates/Specimen.svelte',
 				diff: '#lib/templates/Diff.svelte',
 				edition: '#lib/templates/Edition.svelte',
+				journal: '#lib/templates/Journal.svelte',
+				recipe: '#lib/templates/Recipe.svelte',
 				tundra: '#lib/templates/Tundra.svelte'
 			},
 
@@ -32,8 +36,9 @@ export default defineConfig({
 			// for the CommonMark side of the comparisons
 			highlight: { languages: { svx, pfm: 'svx' } },
 
-			// the steps plugin, which the plugin API slide shows and renders through
-			plugins: [steps()],
+			// the steps plugin, which the plugin API slide shows and renders through; the
+			// ingredients and travel plugins, which the two minisites (src/routes/sites) use
+			plugins: [steps(), ingredients(), travel()],
 
 			// ```math fences and $`inline`$ math, rendered to MathML by Temml at build time
 			math: {},
