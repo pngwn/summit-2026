@@ -25,6 +25,7 @@
 	.lens {
 		position: relative;
 		z-index: 1;
+		margin-top: var(--top-gap);
 		height: 66cqh;
 		aspect-ratio: 540 / 490;
 		max-width: 86cqw;

@@ -5,7 +5,41 @@ export interface Line {
 }
 
 export interface DiffLine extends Line {
-	kind: 'same' | 'del' | 'add';
+	/** `change`: one line whose only difference is at its end, diffed within the line */
+	kind: 'same' | 'del' | 'add' | 'change';
+	/** for a change, what the new line has after the old one's text: shown on the diff */
+	tail?: string;
+}
+
+const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * A deleted line followed by an added one that only replaces its trailing whitespace,
+ * `roses are red␠␠` then `roses are red\`, becomes one changed line: the spaces strike
+ * and the new end appears after them, in place. As two rows, the new line would need
+ * a row of its own, which either pushes the lines below down or shows as a blank line
+ * before the diff.
+ */
+export function inline_changes(lines: DiffLine[]): DiffLine[] {
+	const out: DiffLine[] = [];
+	for (let i = 0; i < lines.length; i++) {
+		const [del, add, after] = [lines[i], lines[i + 1], lines[i + 2]];
+		const kept = del.text.trimEnd();
+		const alone = lines[i - 1]?.kind !== 'del' && after?.kind !== 'add';
+		if (
+			del.kind === 'del' &&
+			add?.kind === 'add' &&
+			alone &&
+			kept.length > 0 &&
+			kept !== del.text &&
+			add.text.startsWith(kept) &&
+			add.text.length > kept.length
+		) {
+			out.push({ ...del, kind: 'change', tail: escape(add.text.slice(kept.length)) });
+			i++;
+		} else out.push(lines[i]);
+	}
+	return out;
 }
 
 /**

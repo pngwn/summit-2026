@@ -9,7 +9,7 @@ notes: |
 
 ::::pair
 :::sample[Source]
-```markdown
+```svx
 - Find a town
 - [x] Learn Markdown
 - [ ] Take over[^a]

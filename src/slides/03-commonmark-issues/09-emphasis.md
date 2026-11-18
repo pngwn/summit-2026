@@ -17,7 +17,7 @@ snake_case_name
 snake*case*name
 ```
 
-```text
+```svx
 snake_case_name
 
 snake|_case_|name

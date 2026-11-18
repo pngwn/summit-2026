@@ -16,7 +16,7 @@ roses are red
 violets are blue
 ```
 
-```markdown
+```svx
 roses are red\
 violets are blue
 ```

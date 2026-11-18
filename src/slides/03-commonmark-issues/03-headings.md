@@ -18,7 +18,7 @@ Heading
 =======
 ```
 
-```markdown
+```svx
 # Heading
 ```
 

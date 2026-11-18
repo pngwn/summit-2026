@@ -12,11 +12,11 @@
 
 	Frontmatter: `rubric`, `title`, `labels` (before and after the diff), `steps` (default
 	2), `diff` (the step the PFM diff shows on, default steps - 1), `reveal` (a step from
-	which trailing spaces are drawn, for invisible syntax).
+	which trailing spaces are drawn, for invisible syntax), `size` (small).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { diff_lines, read_lines, type DiffLine } from '#lib/diff.ts';
+	import { diff_lines, inline_changes, read_lines, type DiffLine } from '#lib/diff.ts';
 	import { inline, lines as title_lines } from '#lib/inline.ts';
 
 	let {
@@ -27,6 +27,7 @@
 		steps = 2,
 		diff,
 		reveal,
+		size,
 		children
 	}: {
 		rubric?: string;
@@ -36,6 +37,8 @@
 		steps?: number;
 		diff?: number;
 		reveal?: number;
+		/** `small`: the code a size down, for a longer sample */
+		size?: 'small';
 		children?: Snippet;
 	} = $props();
 
@@ -68,13 +71,19 @@
 		const [before, after] = body.querySelectorAll(':scope > pre:not(.merged)');
 		if (!before || !after) return;
 		lang = before.className;
-		lines = diff_lines(read_lines(before), read_lines(after))
-			.map(mark_trailing)
-			.map(quiet_comments);
+		lines = inline_changes(
+			diff_lines(read_lines(before), read_lines(after)).map(mark_trailing).map(quiet_comments)
+		);
 	});
 </script>
 
-<section class="scene plate" data-step={step} class:diffed class:revealed>
+<section
+	class="scene plate"
+	class:small={size === 'small'}
+	data-step={step}
+	class:diffed
+	class:revealed
+>
 	<div class="sheet">
 		<header>
 			{#if rubric}<p class="rubric">{@html inline(rubric)}</p>{/if}
@@ -90,7 +99,11 @@
 							>{#each lines as line, i (i)}<span
 									class="row {line.kind}"
 									class:blank={!line.text.trim()}
-									><span class="line">{@html line.html || '&#8203;'}</span></span
+									><span class="line"
+										>{@html line.html || '&#8203;'}{#if line.tail}<span class="tail"
+												>{@html line.tail}</span
+											>{/if}</span
+									></span
 								>{/each}</code
 						></pre>
 				{/if}
@@ -139,6 +152,10 @@
 		font-size: calc(2.45 * var(--unit));
 	}
 
+	.small .body > :global(pre) {
+		font-size: calc(2.1 * var(--unit));
+	}
+
 	@container screen (max-aspect-ratio: 4 / 5) {
 		.body > :global(pre) {
 			font-size: clamp(16px, 4.2cqw, 25px);
@@ -163,10 +180,7 @@
 		line-height: 1.3;
 		color: var(--quiet);
 		opacity: 0;
-		translate: 0 6px;
-		transition:
-			opacity 0.35s ease,
-			translate 0.35s ease;
+		transition: opacity 0.35s ease;
 	}
 
 	[data-step='0'] .body > :global(p:nth-of-type(1)),
@@ -175,7 +189,6 @@
 	[data-step='3'] .body > :global(p:nth-of-type(4)),
 	[data-step='4'] .body > :global(p:nth-of-type(5)) {
 		opacity: 1;
-		translate: 0 0;
 		transition-delay: 0.15s;
 	}
 
@@ -190,21 +203,18 @@
 		display: grid;
 	}
 
-	/* a row is a one-cell grid, so its height can animate between 0fr and 1fr */
+	/* every row keeps its height from the first step: PFM's lines are there, unseen, so
+	   when the diff lands nothing moves; it only appears */
 	.row {
 		position: relative;
-		display: grid;
-		grid-template-rows: 1fr;
 		padding-left: 1.6em;
 		transition:
-			grid-template-rows 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
 			opacity 0.4s ease,
 			background-color 0.4s ease;
 	}
 
 	.line {
-		min-height: 0;
-		overflow: hidden;
+		display: block;
 		white-space: pre;
 		transition:
 			opacity 0.4s ease,
@@ -219,14 +229,13 @@
 		transition: opacity 0.4s ease;
 	}
 
-	/* first step: PFM's lines are folded away, so the fence reads as CommonMark */
+	/* first step: PFM's lines are unseen, so the fence reads as CommonMark */
 	.row.add {
-		grid-template-rows: 0fr;
 		opacity: 0;
 	}
 
-	/* the diff: CommonMark's lines dim and strike, PFM's grow in after them */
-	.diffed .row.del {
+	/* the diff: CommonMark's lines dim and strike where they are, PFM's fade in after them */
+	.diffed .row.del:not(.blank) {
 		background-color: color-mix(in srgb, var(--line-item) 9%, transparent);
 	}
 
@@ -235,42 +244,54 @@
 		text-decoration-color: color-mix(in srgb, var(--name-item) 70%, transparent);
 	}
 
-	.diffed .row.del::before {
+	.diffed .row.del:not(.blank)::before {
 		content: '−';
 		color: var(--name-item);
 		opacity: 1;
 	}
 
 	.diffed .row.add {
-		grid-template-rows: 1fr;
 		opacity: 1;
-		background-color: color-mix(in srgb, var(--line-code) 16%, transparent);
 		transition-delay: 0.25s;
 	}
 
-	.diffed .row.add::before {
+	.diffed .row.add:not(.blank) {
+		background-color: color-mix(in srgb, var(--line-code) 16%, transparent);
+	}
+
+	.diffed .row.add:not(.blank)::before {
 		content: '+';
 		color: var(--name-code);
 		opacity: 1;
 		transition-delay: 0.25s;
 	}
 
-	/* a blank line PFM drops is only space: fold it rather than strike it */
-	.diffed .row.del.blank {
-		grid-template-rows: 0fr;
-		background-color: transparent;
+	/* a line changed at its end: the old end strikes, the new one appears after it, on a
+	   band of its own. Unseen, it already takes its cells, so the line never grows */
+	.tail {
+		opacity: 0;
+		border-radius: 0.12em;
+		transition:
+			opacity 0.4s ease 0.25s,
+			background-color 0.4s ease 0.25s;
 	}
 
-	.diffed .row.del.blank::before {
-		content: none;
+	.diffed .tail {
+		opacity: 1;
+		color: var(--name-code);
+		background-color: color-mix(in srgb, var(--line-code) 22%, transparent);
 	}
 
-	.diffed .row.add.blank {
-		background-color: transparent;
+	.diffed .row.change .line :global(.ws) {
+		text-decoration-line: line-through;
+		text-decoration-thickness: 0.07em;
+		opacity: 0.55;
 	}
 
-	.diffed .row.add.blank::before {
-		content: none;
+	.diffed .row.change::before {
+		content: '±';
+		color: var(--quiet);
+		opacity: 1;
 	}
 
 	.row :global(.comment) {

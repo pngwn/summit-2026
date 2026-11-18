@@ -1,6 +1,7 @@
 ---
 chapter: Live code blocks
 name: A value inside a fence
+size: small
 rubric: Live code blocks
 title: Let the example change.
 notes: |

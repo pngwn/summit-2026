@@ -1,6 +1,8 @@
 import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
+import * as svx from '@twinkleplop/mdsvex';
 import { mdsvex } from 'mdsvex';
+import { steps } from './src/lib/plugins/steps/index.ts';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -24,6 +26,14 @@ export default defineConfig({
 
 			// the directives scenes are written with: :::pair, :::sample[…], ::figure …
 			components: '#lib/markdown.ts',
+
+			// twinkleplop's svx grammar for PFM source: PFM's own rules, plus the script, style,
+			// expressions and frontmatter of a document. ```markdown stays CommonMark's grammar,
+			// for the CommonMark side of the comparisons
+			highlight: { languages: { svx, pfm: 'svx' } },
+
+			// the steps plugin, which the plugin API slide shows and renders through
+			plugins: [steps()],
 
 			// ```math fences and $`inline`$ math, rendered to MathML by Temml at build time
 			math: {},

@@ -17,7 +17,7 @@ https://svelte.dev
 www.svelte.dev
 ```
 
-```markdown
+```svx
 <https://svelte.dev>
 ```
 

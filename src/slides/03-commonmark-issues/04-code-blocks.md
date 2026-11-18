@@ -17,7 +17,7 @@ let x = 1;
     let x = 1;
 ````
 
-````markdown
+````svx
 ```js
 let x = 1;
 ```

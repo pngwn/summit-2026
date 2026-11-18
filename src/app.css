@@ -37,6 +37,9 @@
 :root {
 	color-scheme: light;
 	--teal: #007564;
+	/* every scene starts this far from the top, never centred: in a room the top of the
+	   screen is the part everyone can see */
+	--top-gap: 8cqh;
 	--copper: #a3542e;
 	--pink: #be117c;
 	--aqua: var(--name-heading);
@@ -98,7 +101,7 @@ button {
 	--unit: min(1cqw, 1.85cqh);
 	min-height: 100cqh;
 	display: grid;
-	align-items: center;
+	align-items: start;
 	justify-items: center;
 	touch-action: pan-y;
 	/* the paper: two fine, offset ring patterns, shade at the top and the foot */
@@ -112,7 +115,7 @@ button {
 
 .sheet {
 	width: min(86cqw, 161cqh);
-	padding-block: 6cqh;
+	padding-block: var(--top-gap) 6cqh;
 }
 
 .scene :is(h1, h2, h3, p, figure, pre, ul, ol) {
@@ -177,19 +180,20 @@ button {
 	grid-template-columns: 1fr 1fr;
 	align-items: center;
 	position: relative;
-	min-height: 75cqh;
 }
 
+/* the imprint runs across the top, the title and its drawing level with each other below */
 .opening .imprint {
-	position: absolute;
-	left: 0;
-	top: 2%;
+	grid-column: 1 / -1;
+	margin-bottom: calc(4 * var(--unit)) !important;
 	color: var(--quiet);
 }
 
 .opening h1 {
 	font-size: calc(12.6 * var(--unit));
 	line-height: 0.83;
+	/* the linen is a mask, and a mask stops at the box: room for the Q's tail and the descenders */
+	padding-bottom: 0.14em;
 	position: relative;
 	z-index: 1;
 }
@@ -260,6 +264,7 @@ figcaption {
 .verse h2 {
 	font-size: calc(8.95 * var(--unit));
 	line-height: 0.98;
+	padding-bottom: 0.1em;
 }
 
 .soliloquy .perch {
@@ -374,6 +379,15 @@ figcaption {
 	gap: calc(4 * var(--unit));
 }
 
+.pair.wide {
+	grid-template-columns: 3fr 2fr;
+}
+
+/* pieces stacked in one sample, a fence then another or then what it renders */
+.sample > :not(.label) + :not(.label) {
+	margin-top: calc(1.8 * var(--unit)) !important;
+}
+
 .sample {
 	border-top: 1.5px solid var(--ink);
 	padding-top: calc(1.15 * var(--unit));
@@ -391,7 +405,7 @@ figcaption {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font: calc(2.1 * var(--unit)) / 1.5 var(--face-mono);
+	font: calc(var(--code-size, 2.1) * var(--unit)) / 1.5 var(--face-mono);
 	font-variant-ligatures: none;
 	white-space: pre-wrap;
 	overflow: visible;
@@ -518,6 +532,22 @@ figcaption {
 	font-family: var(--face-display);
 }
 
+/* a header column, left of the ||, is ruled on its right where the || stands */
+.sample > table th[scope='row'] {
+	border-bottom-width: 1px;
+	border-bottom-color: var(--hairline);
+	border-right: 2px solid var(--copper);
+}
+
+/* a run block's output beside its source: the code is already the source on the left */
+.sample > .demo + pre {
+	display: none;
+}
+
+.sample > .demo {
+	border-bottom: 0 !important;
+}
+
 .notation {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
@@ -630,13 +660,68 @@ figcaption {
 }
 
 .sample button {
-	margin-top: 1.2em;
+	margin-top: 0;
 }
 
 button[aria-pressed='true'] {
 	border-color: var(--teal);
 	color: var(--teal);
 	background: rgb(0 129 111 / 0.06);
+}
+
+/* `size: small` in a plate's frontmatter: code and lists a few sizes down, for slides
+   with more source on them */
+.plate.small {
+	--code-size: 1.65;
+}
+
+/* the steps plugin's output (src/lib/plugins/steps), numbered in the deck's mono */
+.steps {
+	counter-reset: step;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	--marker: calc(2.2 * var(--unit));
+}
+
+.steps > .step {
+	counter-increment: step;
+}
+
+.steps .step-title {
+	display: flex;
+	align-items: center;
+	gap: calc(1.2 * var(--unit));
+}
+
+.steps .step-title::before {
+	content: counter(step);
+	flex: none;
+	display: grid;
+	place-items: center;
+	inline-size: var(--marker);
+	block-size: var(--marker);
+	border: 1.5px solid var(--ink);
+	border-radius: 50%;
+	font: calc(1.2 * var(--unit)) / 1 var(--face-mono);
+}
+
+.steps .step-title > * {
+	margin: 0;
+	font-size: calc(2.2 * var(--unit));
+}
+
+.steps .step-body {
+	margin-inline-start: calc(var(--marker) / 2);
+	padding: calc(0.3 * var(--unit)) 0 calc(0.8 * var(--unit))
+		calc(var(--marker) / 2 + 1.2 * var(--unit));
+	border-inline-start: 1px solid var(--hairline);
+	font-size: calc(1.8 * var(--unit));
+}
+
+.steps > .step:last-child > .step-body {
+	padding-bottom: 0;
+	border-inline-start-color: transparent;
 }
 
 /* ---- entry: a short fade and settle; it never decides what is selected ---- */
@@ -674,18 +759,12 @@ button[aria-pressed='true'] {
 
 	.sheet {
 		width: 88cqw;
-		padding-block: 7cqh;
+		padding-block: var(--top-gap) 7cqh;
 	}
 
 	.opening {
 		grid-template-columns: 1fr;
 		gap: 5cqh;
-		min-height: 80cqh;
-		align-content: center;
-	}
-
-	.opening .imprint {
-		position: static;
 	}
 
 	.opening h1 {
@@ -714,7 +793,8 @@ button[aria-pressed='true'] {
 		font-size: 17cqw !important;
 	}
 
-	.pair {
+	.pair,
+	.pair.wide {
 		grid-template-columns: 1fr;
 		gap: 4cqh;
 	}

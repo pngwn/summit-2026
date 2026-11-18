@@ -1,5 +1,6 @@
 ---
 template: diff
+size: small
 name: Reference order
 rubric: Ambiguity · link references
 title: Define it before you use it.
@@ -19,7 +20,7 @@ Read the [docs].
 [docs]: https://mdsvex.com
 ```
 
-```markdown
+```svx
 [docs]: https://mdsvex.com
 
 Read the [docs][].

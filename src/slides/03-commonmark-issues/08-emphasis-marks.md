@@ -16,7 +16,7 @@ _emphasis_
 __strong__
 ```
 
-```markdown
+```svx
 _emphasis_
 
 *strong*

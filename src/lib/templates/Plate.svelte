@@ -2,7 +2,7 @@
 	`template: plate` — a titled technical page. The body is PFM: `:::pair` of
 	`:::sample[Label]`, a `:::ledger` of `::row`, a `:::chronicle`, `:::notation`…
 	(src/lib/directives). A paragraph after them is the afterword.
-	Frontmatter: `rubric`, `title` (lines).
+	Frontmatter: `rubric`, `title` (lines), `size` (small).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -11,11 +11,18 @@
 	let {
 		rubric,
 		title,
+		size,
 		children
-	}: { rubric?: string; title?: string | string[]; children?: Snippet } = $props();
+	}: {
+		rubric?: string;
+		title?: string | string[];
+		/** `small`: code a few sizes down, for a slide with more source */
+		size?: 'small';
+		children?: Snippet;
+	} = $props();
 </script>
 
-<section class="scene plate">
+<section class="scene plate {size ?? ''}">
 	<div class="sheet">
 		<header>
 			{#if rubric}<p class="rubric">{@html inline(rubric)}</p>{/if}

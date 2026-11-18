@@ -11,7 +11,7 @@ notes: |
 
 :::::pair
 ::::sample[With the callouts plugin]
-```markdown
+```svx
 :::note[Field note]
 Start with one town.
 :::

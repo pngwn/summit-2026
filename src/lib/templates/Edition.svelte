@@ -29,6 +29,7 @@
 <style>
 	.edition {
 		--svelte: #c93300;
+		padding-top: var(--top-gap);
 	}
 
 	/* the line: mdsvex and its edition at one size, centred, never wrapped */

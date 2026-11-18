@@ -10,7 +10,7 @@ notes: |
 
 ::::pair
 :::sample[Source]
-```markdown
+```svx
 | Town  | Votes | > |
 | ----- | ----- | - |
 | North | 4     | 2 |
