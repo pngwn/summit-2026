@@ -1,97 +1,80 @@
 <!--
-	`template: edition` — the mdsvex home page's cover at stage size: the heading's source
-	scored on staves ruled out to the edges, the line bird perched on them, and the
-	wordmark under them with its edition beside it. The Title is the site's own
-	(src/lib/home, from packages/site/src/lib/design/title), reading the source with the
-	real parser. Frontmatter: `edition`.
+	`template: edition` — the name and its edition on one line, as large as the stage
+	takes: "mdsvex 1.0". Printed as the mdsvex home page prints its wordmark (the site's
+	Title): Playfair, the black letters with linen's threads knocked out of them, the
+	Svelte letters orange ink on the linen plate, every letter with a ragged edge.
+	Frontmatter: `edition`.
 -->
 <script lang="ts">
-	import Title from '#lib/home/Title.svelte';
+	import { linen } from '#lib/home/plate.ts';
 
 	let { edition = '1.0' }: { edition?: string } = $props();
 
-	// the edition hangs after the wordmark without taking width from it, so "mdsvex" stays
-	// centred under its score; the whole cover then moves left by half the edition, so
-	// "mdsvex 1.0" sits centred on the stage
-	let width = $state(0);
+	// md, then the Svelte part, then ex: the letters of `# md{"sv"}ex` once rendered
+	const parts = [
+		{ text: 'md', svelte: false },
+		{ text: 'sv', svelte: true },
+		{ text: 'ex', svelte: false }
+	];
 </script>
 
 <section class="scene edition">
-	<div class="cover" style:translate="{-width / 2}px 0">
-		<Title>
-			{#snippet after()}<span
-					class="number"
-					bind:offsetWidth={width}
-					style:margin-right="{-width}px"
-				>
-					<span class="ink linen rag">{edition}</span>
-				</span>{/snippet}
-		</Title>
-	</div>
+	<h1 class="wordmark" style:--plate={linen} aria-label="mdsvex {edition}">
+		{#each parts as part (part.text)}<span class="ink rag" class:svelte={part.svelte}>
+				{part.text}
+			</span>{/each}<span class="number ink rag">{edition}</span>
+	</h1>
 </section>
 
 <style>
-	/* the site's voices, which its score and wordmark are inked in */
 	.edition {
-		--voice-blue: #2a2fd4;
-		--voice-rose: #d4145a;
-		--voice-orange: #c93300;
-		--voice-green: #0b8457;
-		overflow: hidden;
+		--svelte: #c93300;
 	}
 
-	/* the home page's .cover, measured in the stage's unit rather than the viewport */
-	.cover {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		text-align: center;
-		--u: calc(2.9 * var(--unit));
-		--track: 0.6em;
-		--phrase-h: calc(1.9 * var(--unit));
-		--stave-gap: 0.2em;
-		--title: calc(19 * var(--unit));
-		--perch-size: calc(2.4 * var(--unit));
-	}
-
-	/* the phrase names are 14px on the site; at stage size they scale with the score */
-	.cover :global(.phrase) {
-		font-size: calc(1.3 * var(--unit));
-	}
-
-	/* the site's gap under the staves (clamp(1.5rem, 4vw, 3rem)), at stage size */
-	.cover :global(.staves) {
-		margin-bottom: calc(3.5 * var(--unit));
-	}
-
-	/* each letter is an inline-block, a break opportunity: the name and edition keep one line */
-	.cover :global(.title) {
-		white-space: nowrap;
-	}
-
-	/* the edition on the wordmark's baseline, italic, at half its size: read with the
-	   name, not under it */
-	.number {
-		display: inline-block;
-		padding-left: 0.32em;
-		font-size: 0.5em;
-		font-style: italic;
-		font-weight: 450;
+	/* the line: mdsvex and its edition at one size, centred, never wrapped */
+	.wordmark {
+		margin: 0;
+		font: 500 calc(17 * var(--unit)) / 1 var(--face-display);
+		font-optical-sizing: auto;
 		letter-spacing: -0.02em;
 		white-space: nowrap;
+		color: var(--ink);
+		/* each run takes its own ink below, so the heading's own linen is off */
+		mask-image: none;
 	}
 
-	.number .ink {
+	.ink {
 		display: inline-block;
+	}
+
+	/* the black letters with the linen's threads cut out of them */
+	.ink:not(.svelte) {
+		mask-image: var(--linen-image, none);
+		mask-size: var(--linen-size, auto);
+		mask-composite: var(--linen-composite, add);
+	}
+
+	/* the Svelte plate, orange ink on linen, the weave showing through it */
+	.svelte {
+		color: transparent;
+		background-image: var(--plate), linear-gradient(var(--svelte), var(--svelte));
+		background-size:
+			96px 96px,
+			auto;
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+
+	/* the edition: italic, the name's size, a word space after it */
+	.number {
+		margin-left: 0.24em;
+		font-style: italic;
+		font-weight: 450;
 	}
 
 	@container screen (max-aspect-ratio: 4 / 5) {
-		.cover {
-			--u: 4.4cqw;
-			--track: 0.45em;
-			--title: 19cqw;
+		.wordmark {
+			font-size: 19cqw;
 		}
 	}
 </style>
