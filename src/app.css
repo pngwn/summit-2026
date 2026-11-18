@@ -1,18 +1,12 @@
-@import '@twinkleplop/theme-github/dark';
+/*
+ * Slide styles. The paper, inks, faces and textures are the mdsvex site's (lib/design);
+ * this file sets them at slide size. Sizes are px on the fixed 1920×1080 canvas
+ * that Stage.svelte scales as a whole.
+ */
 
 :root {
-	--page-bg: #000;
-	--slide-bg: #0b0d12;
-	--slide-fg: #f2f2f0;
-	--slide-muted: #9aa0ab;
-	--accent: #ff5f2e;
-	--accent-fg: #0b0d12;
-	--code-bg: #161b22;
-
-	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-	--font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-
-	color-scheme: dark;
+	color-scheme: light;
+	--rule: 3px;
 }
 
 *,
@@ -25,92 +19,200 @@
 html,
 body {
 	height: 100%;
-	background: var(--page-bg);
-	color: var(--slide-fg);
-	font-family: var(--font-sans);
+	background: #e9e9e4;
+	color: var(--ink);
+	font-family: var(--face-text);
+	font-optical-sizing: auto;
 	-webkit-font-smoothing: antialiased;
 }
 
-/*
- * Slide typography. Sizes are in px because slides render on a fixed 1920×1080 canvas
- * that is scaled as a whole, see src/lib/components/Stage.svelte.
- */
+/* the paper of the site's home page: two sets of fine rings that beat into soft dots,
+   with a little shade at the top and the foot */
+.paper {
+	background-color: var(--paper);
+	background-image:
+		repeating-radial-gradient(
+			circle at 13% 27%,
+			color-mix(in srgb, var(--ink) 1.2%, transparent) 0 1px,
+			transparent 1px 3px
+		),
+		repeating-radial-gradient(
+			circle at 71% 63%,
+			color-mix(in srgb, var(--ink) 1%, transparent) 0 1px,
+			transparent 1px 4px
+		),
+		radial-gradient(at 50% 0%, rgb(18 19 24 / 0.04), transparent 45%),
+		radial-gradient(at 50% 100%, rgb(18 19 24 / 0.05), transparent 50%);
+}
+
+/* ---- slide type ---- */
+
 .slide {
-	font-size: 44px;
-	line-height: 1.4;
+	font-size: 60px;
+	line-height: 1.35;
+}
+
+.slide :is(h1, h2, h3) {
+	font-family: var(--face-display);
+	font-weight: 500;
+	line-height: 1.05;
+	text-wrap: balance;
+	filter: url(#design-rag);
 }
 
 .slide h1 {
-	font-size: 112px;
-	line-height: 1.05;
-	letter-spacing: -0.03em;
+	font-size: 160px;
+	letter-spacing: -0.01em;
 }
 
 .slide h2 {
-	font-size: 80px;
-	line-height: 1.1;
-	letter-spacing: -0.02em;
+	font-size: 112px;
 }
 
 .slide h3 {
-	font-size: 56px;
+	font-size: 72px;
 }
 
-.slide ul,
-.slide ol {
-	padding-left: 1.2em;
+.slide :is(ul, ol) {
+	font-size: 84px;
+	line-height: 1.2;
+	padding-left: 1.1em;
 	display: grid;
-	gap: 0.4em;
+	gap: 0.3em;
 }
 
 .slide li::marker {
-	color: var(--accent);
+	font-family: var(--face-mono);
+	color: var(--quiet);
 }
 
 .slide a {
-	color: var(--accent);
+	color: inherit;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.15em;
+}
+
+.slide em {
+	font-style: italic;
 }
 
 .slide strong {
-	color: var(--accent);
+	font-weight: 700;
 }
 
-.slide blockquote {
-	border-left: 8px solid var(--accent);
-	padding-left: 48px;
-	font-size: 64px;
-	line-height: 1.25;
-}
-
-.slide :not(pre) > code {
-	font-family: var(--font-mono);
-	font-size: 0.85em;
-	padding: 0.1em 0.3em;
-	border-radius: 8px;
-	background: var(--code-bg);
-}
-
+/* code: the site's code.css at slide size. A short fence is the point of the slide, so it runs large */
 .slide pre {
-	font-family: var(--font-mono);
-	font-size: 34px;
-	line-height: 1.5;
-	padding: 40px 48px;
-	border-radius: 24px;
-	background: var(--code-bg);
-	overflow: hidden;
-	tab-size: 2;
+	margin: 0;
+	padding: 8px 0 8px 48px;
+	border-left: var(--rule) solid var(--staff);
+	font-size: 60px;
+	line-height: 1.45;
+	overflow: visible;
 }
 
-.slide pre code {
-	font-family: inherit;
-}
-
-/* ```lang {2,4-5} highlights lines; on a slide, fading the rest reads better than a background */
 .slide pre.has-highlight .l:not(.highlight) {
-	opacity: 0.35;
+	opacity: 0.3;
 }
 
-.slide img {
-	max-width: 100%;
-	max-height: 100%;
+/* inline code sits upright in the ink, even in an italic caption, so `*` and `_` read */
+.slide :not(pre) > code {
+	font-size: 0.95em;
+	font-style: normal;
+	color: var(--ink);
+	padding: 0 0.1em;
+}
+
+/* the caption under a fence, in the serif's italic, quiet */
+.slide pre + p {
+	font-style: italic;
+	color: var(--quiet);
+}
+
+.slide table {
+	border-collapse: collapse;
+	font-size: 48px;
+}
+
+/* every cell ruled, so a merged cell shows what it spans */
+.slide :is(th, td) {
+	padding: 16px 32px;
+	text-align: left;
+	vertical-align: middle;
+	border: 2px solid var(--staff);
+}
+
+.slide thead th {
+	font-family: var(--face-display);
+	font-weight: 600;
+	border-bottom: var(--rule) solid var(--ink);
+}
+
+.slide th[scope='row'] {
+	font-family: var(--face-display);
+	font-style: italic;
+	font-weight: 500;
+}
+
+.slide sup,
+.slide sub {
+	font-size: 0.6em;
+	line-height: 0;
+}
+
+.slide del {
+	text-decoration-thickness: 3px;
+}
+
+/* a task's box drawn in the ink; the browser's disabled checkbox is too faint on the paper */
+.slide input[type='checkbox'] {
+	/* form controls don't inherit font-size, and em sizes below need it */
+	font-size: inherit;
+	appearance: none;
+	width: 0.62em;
+	height: 0.62em;
+	margin: 0 0.35em 0 0;
+	border: 5px solid var(--ink);
+	border-radius: 6px;
+	vertical-align: -0.04em;
+}
+
+.slide input[type='checkbox']:checked {
+	background: var(--name-item);
+	box-shadow: inset 0 0 0 7px var(--paper);
+}
+
+.slide :is(ul, ol):has(input[type='checkbox']) {
+	list-style: none;
+	padding-left: 0;
+}
+
+.slide math {
+	font-size: 1.1em;
+}
+
+.slide math[display='block'] {
+	font-size: 1.6em;
+}
+
+/* a footnote reference and the notes mdsvex collects at the end of the document */
+.slide sup a {
+	font-family: var(--face-mono);
+	text-decoration: none;
+	color: var(--name-link);
+}
+
+.slide .footnotes {
+	font-size: 48px;
+	color: var(--quiet);
+	border-top: 2px solid var(--staff);
+	padding-top: 24px;
+}
+
+.slide .footnotes ol {
+	font-size: inherit;
+	line-height: 1.35;
+}
+
+.slide .footnotes [role='doc-backlink'] {
+	text-decoration: none;
 }

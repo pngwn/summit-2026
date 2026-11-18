@@ -1,4 +1,7 @@
-<!-- `template: title` — opening slide. Reads its text from frontmatter, the body is optional. -->
+<!--
+	`template: title` — the site's cover: credits across the top, the title in Playfair,
+	an italic line under it. All of it from frontmatter; the body, if any, goes last.
+-->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
@@ -18,44 +21,53 @@
 </script>
 
 <section class="slide">
-	{#if event}<p class="event">{event}</p>{/if}
-	{#if title}<h1>{title}</h1>{/if}
-	{#if subtitle}<p class="subtitle">{subtitle}</p>{/if}
-	{@render children?.()}
-	{#if author}<p class="author">{author}</p>{/if}
+	<p class="credits linen">
+		<span>{event ?? ''}</span>
+		<span>{author ?? ''}</span>
+	</p>
+
+	<div class="cover">
+		{#if title}<h1>{title}</h1>{/if}
+		{#if subtitle}<p class="subtitle linen">{subtitle}</p>{/if}
+		{@render children?.()}
+	</div>
 </section>
 
 <style>
 	.slide {
-		height: 100%;
-		padding: 160px;
+		position: absolute;
+		inset: 0;
+		padding: 120px 160px 160px;
 		display: flex;
 		flex-direction: column;
+	}
+
+	.credits {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--face-display);
+		font-size: 40px;
+	}
+
+	.cover {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		justify-content: center;
-		gap: 24px;
+		gap: 48px;
+		text-align: center;
 	}
 
 	h1 {
-		font-size: 160px;
-		line-height: 1;
-		letter-spacing: -0.04em;
-	}
-
-	.event {
-		font-family: var(--font-mono);
-		font-size: 32px;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--accent);
+		font-size: 220px;
+		font-weight: 500;
+		line-height: 0.95;
 	}
 
 	.subtitle {
-		font-size: 56px;
-		color: var(--slide-muted);
-	}
-
-	.author {
-		margin-top: 64px;
-		font-size: 40px;
+		font-family: var(--face-display);
+		font-style: italic;
+		font-size: 72px;
 	}
 </style>

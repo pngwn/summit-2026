@@ -2,8 +2,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import Stage from '#lib/components/Stage.svelte';
-	import { get_slide, total } from '#lib/deck.ts';
+	import SlideView from '#lib/components/SlideView.svelte';
+	import { get_slide } from '#lib/deck.ts';
 	import { handle_deck_key } from '#lib/keys.ts';
 	import { broadcast, on_remote_goto } from '#lib/sync.ts';
 	import type { PageProps } from './$types';
@@ -29,25 +29,12 @@
 <svelte:window onkeydown={(e) => handle_deck_key(e, data.n, go)} />
 
 <main>
-	<Stage>
-		<slide.component />
-	</Stage>
-
-	<div class="progress" style:width="{(data.n / total) * 100}%"></div>
+	<SlideView {slide} />
 </main>
 
 <style>
 	main {
 		position: fixed;
 		inset: 0;
-	}
-
-	.progress {
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		height: 4px;
-		background: var(--accent);
-		transition: width 0.3s ease;
 	}
 </style>

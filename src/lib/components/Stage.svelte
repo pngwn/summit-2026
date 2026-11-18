@@ -39,8 +39,9 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		background: var(--slide-bg);
-		color: var(--slide-fg);
+		background: var(--paper);
+		color: var(--ink);
 		overflow: hidden;
+		box-shadow: 0 2px 40px rgb(18 19 24 / 0.12);
 	}
 </style>

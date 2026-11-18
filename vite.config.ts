@@ -13,8 +13,13 @@ export default defineConfig({
 			templates: {
 				default: '#lib/templates/Slide.svelte',
 				title: '#lib/templates/TitleSlide.svelte',
-				section: '#lib/templates/SectionSlide.svelte'
+				section: '#lib/templates/SectionSlide.svelte',
+				statement: '#lib/templates/StatementSlide.svelte',
+				pair: '#lib/templates/PairSlide.svelte'
 			},
+
+			// ```math fences and $`inline`$ math, rendered to MathML by Temml at build time
+			math: {},
 
 			// `--` → en dash, `---` → em dash, curly quotes
 			smart_punctuation: true

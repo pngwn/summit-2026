@@ -12,3 +12,7 @@ bun.lockb
 *.md
 *.svx
 !README.md
+
+# copied verbatim from the mdsvex site, see src/lib/design/README.md
+/src/lib/design/*.css
+/src/lib/design/*.ts

@@ -10,31 +10,49 @@ export interface SlideMeta {
 	[key: string]: unknown;
 }
 
+export interface Section {
+	title: string;
+	/** I, II, III … */
+	numeral: string;
+}
+
 export interface Slide {
 	/** 1-based position in the deck */
 	n: number;
-	/** file name without extension, e.g. `02-hello` */
+	/** path under src/slides without extension, e.g. `03-commonmark/02-headings` */
 	id: string;
-	component: Component;
+	component: Component<Record<string, unknown>>;
 	meta: SlideMeta;
+	/** the section this slide sits in: the nearest `template: section` slide at or before it */
+	section?: Section;
 }
 
-type SlideModule = { default: Component; metadata?: SlideMeta };
+type SlideModule = { default: Component<Record<string, unknown>>; metadata?: SlideMeta };
 
-// Every file in src/slides is a slide; file names decide the order, so prefix them `01-`, `02-` …
-const modules = import.meta.glob<SlideModule>('/src/slides/*.{md,svx}', { eager: true });
+// Every file under src/slides is a slide, ordered by path: a folder per section,
+// `01-`, `02-` … prefixes inside it
+const modules = import.meta.glob<SlideModule>('/src/slides/**/*.{md,svx}', { eager: true });
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'];
+
+let section: Section | undefined;
+let sections = 0;
 
 export const slides: Slide[] = Object.entries(modules)
 	.sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-	.map(([path, mod], i) => ({
-		n: i + 1,
-		id: path
-			.split('/')
-			.pop()!
-			.replace(/\.(md|svx)$/, ''),
-		component: mod.default,
-		meta: mod.metadata ?? {}
-	}));
+	.map(([path, mod], i) => {
+		const meta = mod.metadata ?? {};
+		if (meta.template === 'section') {
+			section = { title: meta.title ?? '', numeral: ROMAN[sections++] ?? String(sections) };
+		}
+		return {
+			n: i + 1,
+			id: path.replace('/src/slides/', '').replace(/\.(md|svx)$/, ''),
+			component: mod.default,
+			meta,
+			section
+		};
+	});
 
 export const total = slides.length;
 

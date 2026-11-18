@@ -17,9 +17,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.3.1
         version: 7.3.1(svelte@5.58.0)(vite@8.3.8)
-      '@twinkleplop/theme-github':
-        specifier: ^0.2.4
-        version: 0.2.4
+      '@twinkleplop/theme-ayu':
+        specifier: ^0.1.4
+        version: 0.1.4
       mdsvex:
         specifier: 1.0.0-next.6
         version: 1.0.0-next.6(svelte@5.58.0)(vite@8.3.8)
@@ -316,8 +316,8 @@ packages:
   '@twinkleplop/svelte@0.1.7':
     resolution: {integrity: sha512-8Zz7WYm7ERGNTZeCjiceRWDB+spcrDA9ToUV/AtavMl68ZM28E1AIPOdo2ddKkBDnHim8Vs7tVlFr9T3Mq1NlA==}
 
-  '@twinkleplop/theme-github@0.2.4':
-    resolution: {integrity: sha512-gCo1G/dGspjNSUoLPLE49MZx97LoEdGYQQHqh985Vfg0jsdupCPHRRvRkgXm8RsP7TvZ2ib/nORpCPNiauflSA==}
+  '@twinkleplop/theme-ayu@0.1.4':
+    resolution: {integrity: sha512-FeSIhOLP0XnKP2v0cxs6IYZc1KW52oSgDqQaHfD6XR4keVZuteUZj8sJPVnbHbJI55v9UWlPQ5wCxurlXgGQuw==}
 
   '@twinkleplop/toml@0.1.7':
     resolution: {integrity: sha512-E7iCWjUHTEEtfSBOccvrO2dI0jR88Sktqf1ZCq3Sc22TMuj6QdLhOPtaNyIfwkIstUprdTd9NcFzNIZgXwvooQ==}
@@ -914,7 +914,7 @@ snapshots:
       '@twinkleplop/css': 0.1.7
       '@twinkleplop/javascript': 0.1.7
 
-  '@twinkleplop/theme-github@0.2.4':
+  '@twinkleplop/theme-ayu@0.1.4':
     dependencies:
       '@twinkleplop/core': 0.3.1
 

@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import Stage from '#lib/components/Stage.svelte';
+	import SlideView from '#lib/components/SlideView.svelte';
 	import { get_slide, total } from '#lib/deck.ts';
 	import { handle_deck_key } from '#lib/keys.ts';
 	import { broadcast, on_remote_goto } from '#lib/sync.ts';
@@ -47,17 +47,13 @@
 
 <main>
 	<div class="current">
-		<Stage>
-			<slide.component />
-		</Stage>
+		<SlideView {slide} />
 	</div>
 
 	<aside>
 		<div class="next">
 			{#if next}
-				<Stage>
-					<next.component />
-				</Stage>
+				<SlideView slide={next} />
 			{:else}
 				<p class="end">End of deck</p>
 			{/if}
@@ -87,7 +83,8 @@
 		gap: 24px;
 		padding: 24px;
 		background: #111;
-		font-family: var(--font-sans);
+		font-family: var(--face-text);
+		color: #e8e6de;
 	}
 
 	.current,
@@ -118,20 +115,21 @@
 		height: 100%;
 		display: grid;
 		place-items: center;
-		color: var(--slide-muted);
+		color: #9b9eaa;
 	}
 
 	.status {
+		font-variant-ligatures: none;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		font-family: var(--font-mono);
+		font-family: var(--face-mono);
 		font-size: 32px;
 	}
 
 	.status button {
 		font: inherit;
-		color: var(--accent);
+		color: var(--line-expr);
 		background: none;
 		border: none;
 		cursor: pointer;
@@ -145,6 +143,6 @@
 	}
 
 	.empty {
-		color: var(--slide-muted);
+		color: #9b9eaa;
 	}
 </style>
