@@ -3,26 +3,23 @@
 	Open it with `p` from the audience view; both windows stay in sync.
 -->
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import SlideView from '#lib/components/SlideView.svelte';
-	import { get_slide, total } from '#lib/deck.ts';
+	import { get_slide, next, total } from '#lib/deck.ts';
 	import { handle_deck_key } from '#lib/keys.ts';
-	import { broadcast, on_remote_goto } from '#lib/sync.ts';
+	import { deck_nav } from '#lib/nav.svelte.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
+	const nav = deck_nav('/presenter/[slide]', () => data.n);
 	let slide = $derived(get_slide(data.n)!);
-	let next = $derived(get_slide(data.n + 1));
 
-	function go(n: number, from_remote = false) {
-		if (n === data.n) return;
-		if (!from_remote) broadcast(n);
-		goto(resolve('/presenter/[slide]', { slide: String(n) }), { reset: false });
-	}
-
-	$effect(() => on_remote_goto((n) => go(n, true)));
+	// what → shows next: this slide's next step, or the next slide
+	let upcoming = $derived.by(() => {
+		const to = next(nav.pos);
+		if (to.n === nav.pos.n && to.step === nav.pos.step) return undefined;
+		return { slide: get_slide(to.n)!, step: to.step };
+	});
 
 	// a simple elapsed timer; click it to reset
 	let started = $state(Date.now());
@@ -43,24 +40,26 @@
 	<title>Presenter · {slide.meta.title ?? `Slide ${data.n}`}</title>
 </svelte:head>
 
-<svelte:window onkeydown={(e) => handle_deck_key(e, data.n, go)} />
+<svelte:window onkeydown={(e) => handle_deck_key(e, nav.pos, nav.go)} />
 
 <main>
 	<div class="current">
-		<SlideView {slide} />
+		<SlideView {slide} step={nav.pos.step} />
 	</div>
 
 	<aside>
 		<div class="next">
-			{#if next}
-				<SlideView slide={next} />
+			{#if upcoming}
+				<SlideView slide={upcoming.slide} step={upcoming.step} />
 			{:else}
 				<p class="end">End of deck</p>
 			{/if}
 		</div>
 
 		<div class="status">
-			<span>{data.n} / {total}</span>
+			<span>
+				{data.n} / {total}{#if slide.steps > 1}&ensp;·&ensp;step {nav.pos.step + 1} of {slide.steps}{/if}
+			</span>
 			<button title="Reset timer" onclick={() => (started = now = Date.now())}>{elapsed}</button>
 		</div>
 

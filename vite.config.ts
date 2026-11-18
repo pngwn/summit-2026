@@ -15,7 +15,8 @@ export default defineConfig({
 				title: '#lib/templates/TitleSlide.svelte',
 				section: '#lib/templates/SectionSlide.svelte',
 				statement: '#lib/templates/StatementSlide.svelte',
-				pair: '#lib/templates/PairSlide.svelte'
+				pair: '#lib/templates/PairSlide.svelte',
+				diff: '#lib/templates/DiffSlide.svelte'
 			},
 
 			// ```math fences and $`inline`$ math, rendered to MathML by Temml at build time

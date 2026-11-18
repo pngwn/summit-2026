@@ -1,6 +1,7 @@
 <!--
-	Renders children on a fixed 1920×1080 canvas and scales it to fit its container,
-	so slides look identical on a laptop, a projector, or the presenter preview.
+	Fills its container with a canvas measured in "slide px": at least 1920×1080, grown in
+	whichever direction the screen is longer, then scaled down to fit exactly. Slides can
+	size everything in px and still fill any screen edge to edge, with no letterbox.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -12,15 +13,15 @@
 
 	let w = $state(0);
 	let h = $state(0);
-	let scale = $derived(Math.min(w / WIDTH, h / HEIGHT) || 0);
+	let scale = $derived(Math.min(w / WIDTH, h / HEIGHT) || 1);
 </script>
 
 <div class="viewport" bind:clientWidth={w} bind:clientHeight={h}>
 	<div
 		class="canvas"
-		style:width="{WIDTH}px"
-		style:height="{HEIGHT}px"
-		style:transform="translate(-50%, -50%) scale({scale})"
+		style:width="{w / scale}px"
+		style:height="{h / scale}px"
+		style:transform="scale({scale})"
 	>
 		{@render children()}
 	</div>
@@ -34,14 +35,11 @@
 		overflow: hidden;
 	}
 
-	/* centre the full-size canvas, then shrink it around its own centre */
 	.canvas {
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		background: var(--paper);
-		color: var(--ink);
+		top: 0;
+		left: 0;
+		transform-origin: 0 0;
 		overflow: hidden;
-		box-shadow: 0 2px 40px rgb(18 19 24 / 0.12);
 	}
 </style>

@@ -25,6 +25,14 @@ export interface Slide {
 	meta: SlideMeta;
 	/** the section this slide sits in: the nearest `template: section` slide at or before it */
 	section?: Section;
+	/** how many times → stays on this slide: `steps` in frontmatter, 2 for a diff, else 1 */
+	steps: number;
+}
+
+/** where the deck is: a slide, and the step within it (0-based) */
+export interface Position {
+	n: number;
+	step: number;
 }
 
 type SlideModule = { default: Component<Record<string, unknown>>; metadata?: SlideMeta };
@@ -50,7 +58,8 @@ export const slides: Slide[] = Object.entries(modules)
 			id: path.replace('/src/slides/', '').replace(/\.(md|svx)$/, ''),
 			component: mod.default,
 			meta,
-			section
+			section,
+			steps: Number(meta.steps) || (meta.template === 'diff' ? 2 : 1)
 		};
 	});
 
@@ -63,4 +72,24 @@ export function get_slide(n: number): Slide | undefined {
 /** clamp a slide number into the deck */
 export function clamp(n: number): number {
 	return Math.min(Math.max(1, n), total);
+}
+
+/** clamp a step into its slide */
+export function clamp_step(n: number, step: number): number {
+	const steps = get_slide(n)?.steps ?? 1;
+	return Math.min(Math.max(0, step), steps - 1);
+}
+
+/** the next step, or the next slide's first */
+export function next(pos: Position): Position {
+	if (pos.step < (get_slide(pos.n)?.steps ?? 1) - 1) return { n: pos.n, step: pos.step + 1 };
+	if (pos.n < total) return { n: pos.n + 1, step: 0 };
+	return pos;
+}
+
+/** the previous step, or the previous slide's last, as if you had stepped through it */
+export function prev(pos: Position): Position {
+	if (pos.step > 0) return { n: pos.n, step: pos.step - 1 };
+	if (pos.n > 1) return { n: pos.n - 1, step: (get_slide(pos.n - 1)?.steps ?? 1) - 1 };
+	return pos;
 }

@@ -1,13 +1,14 @@
 import { resolve } from '$app/paths';
-import { clamp, total } from '#lib/deck.ts';
+import { next, prev, slides, type Position } from '#lib/deck.ts';
 
 const INTERACTIVE = 'input, textarea, select, button, a, [contenteditable]';
 
 /**
- * Shared keyboard controls for the audience and presenter views.
- * Calls `go` with the target slide number, or handles the key itself (fullscreen, presenter).
+ * Shared keyboard controls for the audience and presenter views. → and space step through
+ * a slide's steps before moving on; ← steps back, landing on a slide's last step.
+ * Calls `go` with the position to move to, or handles the key itself (fullscreen, presenter).
  */
-export function handle_deck_key(e: KeyboardEvent, n: number, go: (n: number) => void) {
+export function handle_deck_key(e: KeyboardEvent, pos: Position, go: (pos: Position) => void) {
 	if (e.metaKey || e.ctrlKey || e.altKey) return;
 	// let live components inside a slide keep their keys (space on a button, typing in an input…)
 	if (e.target instanceof Element && e.target.closest(INTERACTIVE)) return;
@@ -17,19 +18,18 @@ export function handle_deck_key(e: KeyboardEvent, n: number, go: (n: number) => 
 		case 'ArrowDown':
 		case 'PageDown':
 		case ' ':
-			if (e.shiftKey && e.key === ' ') go(clamp(n - 1));
-			else go(clamp(n + 1));
+			go(e.shiftKey && e.key === ' ' ? prev(pos) : next(pos));
 			break;
 		case 'ArrowLeft':
 		case 'ArrowUp':
 		case 'PageUp':
-			go(clamp(n - 1));
+			go(prev(pos));
 			break;
 		case 'Home':
-			go(1);
+			go({ n: 1, step: 0 });
 			break;
 		case 'End':
-			go(total);
+			go({ n: slides.length, step: 0 });
 			break;
 		case 'f':
 			if (document.fullscreenElement) document.exitFullscreen();
@@ -37,7 +37,7 @@ export function handle_deck_key(e: KeyboardEvent, n: number, go: (n: number) => 
 			break;
 		case 'p':
 			window.open(
-				resolve('/presenter/[slide]', { slide: String(n) }),
+				resolve('/presenter/[slide]', { slide: String(pos.n) }) + (pos.step ? `#${pos.step}` : ''),
 				'presenter',
 				'popup,width=1400,height=900'
 			);
@@ -47,4 +47,9 @@ export function handle_deck_key(e: KeyboardEvent, n: number, go: (n: number) => 
 	}
 
 	e.preventDefault();
+}
+
+/** the step a URL is on: its hash, `/7#1` is slide 7's second step */
+export function step_from_hash(hash: string): number {
+	return Number(hash.slice(1)) || 0;
 }

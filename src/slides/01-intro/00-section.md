@@ -1,4 +1,0 @@
----
-template: section
-title: Intro
----
