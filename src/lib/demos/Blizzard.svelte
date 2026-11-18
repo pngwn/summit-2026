@@ -62,6 +62,9 @@ float h2(vec2 p, float k) {
 uniform sampler2D uPrev;
 uniform vec2 uGrid;
 uniform float uT, uAspect, uWind, uStill;
+// how far each layer has travelled, summed frame by frame on the CPU: a speed that
+// follows the wind, multiplied by the time, would lurch back and forth as the wind changed
+uniform float uFlow, uVeil, uSpin, uHaze;
 out vec4 o;
 
 const int R_SKY[4] = int[4](${ids(R.SKY)});
@@ -76,6 +79,8 @@ const int G_BLANK = ${G(' ')}, G_UNDER = ${G('_')};
 const float HZ = .64;
 
 int TG; float TL;
+// the pin shows something carried by the wind: it crossfades rather than flips
+bool DRIFT;
 
 float vnoise(vec2 p) {
   vec2 i = floor(p), f = fract(p), u = f * f * (3. - 2. * f);
@@ -92,15 +97,15 @@ bool flakes(float c, float r) {
   for (int k = 2; k >= 0; k--) {
     float fk = float(k);
     float sink = .05 + fk * .025;                       // rows dropped per column travelled
-    float speed = (.018 + fk * .012) * (.9 + .2 * uWind); // screen widths a second
+    float speed = .018 + fk * .012; // screen widths a second, times the wind's uFlow
     float bob = sin(c * (.07 + fk * .02) + uT * (.35 + fk * .1) + fk * 2.1) * (.45 + fk * .15);
     float lane = floor(r - c * sink + bob);
     float dens = k == 0 ? .9 : k == 1 ? .55 : .3;
     if (h2(vec2(lane, 7. + fk), 0.) > dens) continue;
     float period = uGrid.x * ((k == 0 ? .1 : k == 1 ? .18 : .3) + h2(vec2(lane, 3. + fk), 0.) * .45);
-    float x = mod(c - uT * speed * uGrid.x - h2(vec2(lane, 11. + fk), 0.) * 999., period);
+    float x = mod(c - uFlow * speed * uGrid.x - h2(vec2(lane, 11. + fk), 0.) * 999., period);
     if (x < 1.) {
-      float pick = h2(vec2(lane, floor((c - uT * speed * uGrid.x) / period) + 19. + fk), 0.);
+      float pick = h2(vec2(lane, floor((c - uFlow * speed * uGrid.x) / period) + 19. + fk), 0.);
       if (k == 0) { TG = R_FAR[int(pick * 2.)]; TL = 6. + pick * 2.; }
       else if (k == 1) { TG = R_MID[int(pick * 3.)]; TL = 9. + pick * 2.; }
       else { TG = R_NEAR[int(pick * 2.)]; TL = 12. + pick * 3.; }
@@ -123,16 +128,21 @@ void scene(float c, float r) {
     float k = ny / ridge;
     // veils of driven snow: noise stretched along the wind's slant and streaming with it
     vec2 q = vec2(nx - ny * slope, ny + nx * .12);
-    float veil = fbm(vec2(q.x * 1.6 - uT * (.02 + .05 * uWind), q.y * 9.));
+    float veil = fbm(vec2(q.x * 1.6 - uVeil, q.y * 9.));
     veil = smoothstep(.46, .82, veil) * (.45 + .7 * uWind);
-    if (veil > dith * .9 + .08) {
-      TG = R_VEIL[clamp(int(veil * 4. + h2(vec2(c, r), floor(uT * 3.)) * 2.), 0, 5)];
+    // the veil's own texture, its thresholds and glyphs, is read where the pin sits in the
+    // moving veil, so a run slides across the pins whole instead of being redrawn in place
+    vec2 at = vec2(floor(c - uVeil / 1.6 * uGrid.x), r);
+    if (veil > h2(at, 5.) * .9 + .08) {
+      DRIFT = true;
+      TG = R_VEIL[clamp(int(veil * 4. + h2(at, 23.) * 2.), 0, 5)];
       TL = 3.5 + veil * 6.;
       return;
     }
     // otherwise mostly white-out: haze only where the drifting cloud thickens
-    float v = (fbm(vec2(nx * 2.2 - uT * .04 * uWind, ny * 3.5 + uT * .01)) - .45) * 1.1 + k * k * .08;
-    if (v > dith * .6) { TG = R_SKY[1 + int(h2(vec2(c, r), 13.) * 2.)]; TL = 2.5 + v * 7.; return; }
+    float v = (fbm(vec2(nx * 2.2 - uHaze, ny * 3.5 + uT * .01)) - .45) * 1.1 + k * k * .08;
+    vec2 hat = vec2(floor(c - uHaze / 2.2 * uGrid.x), r);
+    if (v > h2(hat, 5.) * .6) { DRIFT = true; TG = R_SKY[1 + int(h2(hat, 13.) * 2.)]; TL = 2.5 + v * 7.; return; }
     TG = R_SKY[0]; TL = 0.;
     return;
   }
@@ -152,9 +162,10 @@ void scene(float c, float r) {
   float dep = 1. / (ny - HZ + .03);
   float drift = fbm(vec2(nx * 3.5 / (.35 + z), dep * .12));
   float ridges = .5 + .5 * sin(dep * 1.3 + nx * 2.4 + drift * 5.);
-  float spin = fbm(vec2((nx - ny * slope * .4) * 2.2 * (1. + z) - uT * (.03 + .1 * uWind), dep * .3 + uT * .015));
+  float spin = fbm(vec2((nx - ny * slope * .4) * 2.2 * (1. + z) - uSpin, dep * .3 + uT * .015));
   spin = smoothstep(.48, .85, spin) * (.3 + .8 * uWind) * (1. - z * .45);
-  if (spin > dith * .8 + .08) { TG = R_VEIL[clamp(int(spin * 4. + h2(vec2(c, r), floor(uT * 4.)) * 2.), 0, 5)]; TL = 3.5 + spin * 6.; return; }
+  vec2 sat = vec2(floor(c - uSpin / (2.2 * (1. + z)) * uGrid.x), r);
+  if (spin > h2(sat, 5.) * .8 + .08) { DRIFT = true; TG = R_VEIL[clamp(int(spin * 4. + h2(sat, 23.) * 2.), 0, 5)]; TL = 3.5 + spin * 6.; return; }
   // bare snow, with the crest of a ridge marked here and there
   float v = ridges * ridges * ridges * (.5 + .5 * z) + drift * .25 - .18;
   if (v < dith * .55) { TG = G_BLANK; TL = 0.; return; }
@@ -174,6 +185,7 @@ void main() {
 
   TG = G_BLANK; TL = 0.;
   bool mine = false;
+  DRIFT = false;
   if (uT >= reveal) {
     mine = flakes(c, r);
     if (!mine) scene(c, r);
@@ -191,12 +203,13 @@ void main() {
     if (TG != curG || int(cur) % 128 != TC) {
       to = float(TG * 128 + TC);
       // flakes, and a pin a flake leaves, crossfade; the land flips, now and then through a noise glyph
-      bool soft = mine || curG == R_FAR[0] || curG == R_FAR[1] || curG == R_MID[0] || curG == R_MID[1] || curG == R_MID[2] || curG == R_NEAR[0] || curG == R_NEAR[1] || TG == curG;
+      bool soft = mine || DRIFT || curG == R_FAR[0] || curG == R_FAR[1] || curG == R_MID[0] || curG == R_MID[1] || curG == R_MID[2] || curG == R_NEAR[0] || curG == R_NEAR[1] || TG == curG;
       bool useMid = !soft && h2(vec2(c, r), floor(uT * 60.)) < .1;
       int mid = useMid ? NOISE[int(h2(vec2(r, c), floor(uT * 37.)) * ${R.NOISE.length}.)] : -1;
       mid1 = float(mid + 1);
       fade = soft;
-      dur = soft ? .07 : (useMid ? .2 : .11) + h2(vec2(r, c), 1.) * .06;
+      // a flake crosses a pin in about a tenth of a second, a veil in a quarter
+      dur = soft ? (mine ? .07 : .16) : (useMid ? .2 : .11) + h2(vec2(r, c), 1.) * .06;
       t0 = uT;
       if (uStill > .5) { cur = to; t0 = -uT; }
     }
@@ -318,6 +331,9 @@ in vec2 p; void main() { gl_Position = vec4(p, 0, 1); }`;
 		let start = performance.now();
 		let frame = 0;
 		let still = 0;
+		// each layer's travel, summed a frame at a time (see uFlow in the shader)
+		const travel = { flow: 0, veil: 0, spin: 0, haze: 0 };
+		let last = 0;
 
 		function texture(w: number, h: number) {
 			const tex = gl!.createTexture()!;
@@ -397,6 +413,7 @@ in vec2 p; void main() { gl_Position = vec4(p, 0, 1); }`;
 			state = [texture(grid.x, grid.y), texture(grid.x, grid.y)];
 			build_atlas();
 			start = performance.now();
+			last = 0;
 			still = 0;
 		}
 
@@ -423,7 +440,19 @@ in vec2 p; void main() { gl_Position = vec4(p, 0, 1); }`;
 			gl!.uniform2f(update.u.uGrid, grid.x, grid.y);
 			gl!.uniform1f(update.u.uT, t);
 			gl!.uniform1f(update.u.uAspect, cell.h / cell.w);
-			gl!.uniform1f(update.u.uWind, wind(t));
+			const w = wind(t);
+			// a frame's step at most a tenth of a second, so a stalled tab doesn't jump on return
+			const dt = Math.min(0.1, Math.max(0, t - last));
+			last = t;
+			travel.flow += dt * (0.9 + 0.2 * w);
+			travel.veil += dt * (0.02 + 0.05 * w);
+			travel.spin += dt * (0.03 + 0.1 * w);
+			travel.haze += dt * 0.04 * w;
+			gl!.uniform1f(update.u.uWind, w);
+			gl!.uniform1f(update.u.uFlow, travel.flow);
+			gl!.uniform1f(update.u.uVeil, travel.veil);
+			gl!.uniform1f(update.u.uSpin, travel.spin);
+			gl!.uniform1f(update.u.uHaze, travel.haze);
 			gl!.uniform1f(update.u.uStill, REDUCED ? 1 : 0);
 			gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 			flip ^= 1;
