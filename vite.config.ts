@@ -17,7 +17,9 @@ export default defineConfig({
 				cover: '#lib/templates/Cover.svelte',
 				verse: '#lib/templates/Verse.svelte',
 				specimen: '#lib/templates/Specimen.svelte',
-				diff: '#lib/templates/Diff.svelte'
+				diff: '#lib/templates/Diff.svelte',
+				edition: '#lib/templates/Edition.svelte',
+				tundra: '#lib/templates/Tundra.svelte'
 			},
 
 			// the directives scenes are written with: :::pair, :::sample[…], ::figure …
