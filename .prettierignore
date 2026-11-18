@@ -1,0 +1,14 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Miscellaneous
+/static/
+
+# mdsvex next syntax is not CommonMark (*strong*, _em_, {expressions}), prettier would rewrite it
+*.md
+*.svx
+!README.md

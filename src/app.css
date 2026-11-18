@@ -1,0 +1,116 @@
+@import '@twinkleplop/theme-github/dark';
+
+:root {
+	--page-bg: #000;
+	--slide-bg: #0b0d12;
+	--slide-fg: #f2f2f0;
+	--slide-muted: #9aa0ab;
+	--accent: #ff5f2e;
+	--accent-fg: #0b0d12;
+	--code-bg: #161b22;
+
+	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+html,
+body {
+	height: 100%;
+	background: var(--page-bg);
+	color: var(--slide-fg);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Slide typography. Sizes are in px because slides render on a fixed 1920×1080 canvas
+ * that is scaled as a whole, see src/lib/components/Stage.svelte.
+ */
+.slide {
+	font-size: 44px;
+	line-height: 1.4;
+}
+
+.slide h1 {
+	font-size: 112px;
+	line-height: 1.05;
+	letter-spacing: -0.03em;
+}
+
+.slide h2 {
+	font-size: 80px;
+	line-height: 1.1;
+	letter-spacing: -0.02em;
+}
+
+.slide h3 {
+	font-size: 56px;
+}
+
+.slide ul,
+.slide ol {
+	padding-left: 1.2em;
+	display: grid;
+	gap: 0.4em;
+}
+
+.slide li::marker {
+	color: var(--accent);
+}
+
+.slide a {
+	color: var(--accent);
+}
+
+.slide strong {
+	color: var(--accent);
+}
+
+.slide blockquote {
+	border-left: 8px solid var(--accent);
+	padding-left: 48px;
+	font-size: 64px;
+	line-height: 1.25;
+}
+
+.slide :not(pre) > code {
+	font-family: var(--font-mono);
+	font-size: 0.85em;
+	padding: 0.1em 0.3em;
+	border-radius: 8px;
+	background: var(--code-bg);
+}
+
+.slide pre {
+	font-family: var(--font-mono);
+	font-size: 34px;
+	line-height: 1.5;
+	padding: 40px 48px;
+	border-radius: 24px;
+	background: var(--code-bg);
+	overflow: hidden;
+	tab-size: 2;
+}
+
+.slide pre code {
+	font-family: inherit;
+}
+
+/* ```lang {2,4-5} highlights lines; on a slide, fading the rest reads better than a background */
+.slide pre.has-highlight .l:not(.highlight) {
+	opacity: 0.35;
+}
+
+.slide img {
+	max-width: 100%;
+	max-height: 100%;
+}
