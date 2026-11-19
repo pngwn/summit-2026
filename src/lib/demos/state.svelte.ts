@@ -2,7 +2,5 @@
 // finds them as they were left. A reload resets them.
 export const demos = $state({
 	/** the town the bird is at, on the territory map */
-	town: 0,
-	/** the package manager the live example substitutes */
-	pm: 'pnpm'
+	town: 0
 });

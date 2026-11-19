@@ -1,4 +1,5 @@
 ---
+chapter: Live code blocks
 name: Code that runs
 size: small
 rubric: Live code blocks · run
