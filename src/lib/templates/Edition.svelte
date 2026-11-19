@@ -3,12 +3,17 @@
 	takes: "mdsvex 1.0". Printed as the mdsvex home page prints its wordmark (the site's
 	Title): Playfair, the black letters with linen's threads knocked out of them, the
 	Svelte letters orange ink on the linen plate, every letter with a ragged edge.
-	Frontmatter: `edition`.
+	Under it, optionally, a link and a line: the closing slide has the site and its motto.
+	Frontmatter: `edition`, `link` (a host, shown as written), `tagline`.
 -->
 <script lang="ts">
 	import { linen } from '#lib/home/plate.ts';
 
-	let { edition = '1.0' }: { edition?: string } = $props();
+	let {
+		edition = '1.0',
+		link,
+		tagline
+	}: { edition?: string; link?: string; tagline?: string } = $props();
 
 	// md, then the Svelte part, then ex: the letters of `# md{"sv"}ex` once rendered
 	const parts = [
@@ -19,17 +24,43 @@
 </script>
 
 <section class="scene edition">
-	<h1 class="wordmark" style:--plate={linen} aria-label="mdsvex {edition}">
-		{#each parts as part (part.text)}<span class="ink rag" class:svelte={part.svelte}>
-				{part.text}
-			</span>{/each}<span class="number ink rag">{edition}</span>
-	</h1>
+	<div class="mark">
+		<h1 class="wordmark" style:--plate={linen} aria-label="mdsvex {edition}">
+			{#each parts as part (part.text)}<span class="ink rag" class:svelte={part.svelte}>
+					{part.text}
+				</span>{/each}<span class="number ink rag">{edition}</span>
+		</h1>
+		{#if link}<a class="link" href="https://{link}" target="_blank" rel="noopener">{link}</a>{/if}
+		{#if tagline}<p class="tagline">{tagline}</p>{/if}
+	</div>
 </section>
 
 <style>
 	.edition {
 		--svelte: #c93300;
 		padding-top: var(--top-gap);
+	}
+
+	/* the wordmark, then the link and the line under it, all centred */
+	.mark {
+		display: grid;
+		justify-items: center;
+	}
+
+	.link {
+		margin-top: calc(3.5 * var(--unit));
+		font: calc(3 * var(--unit)) / 1.2 var(--face-mono);
+		font-variant-ligatures: none;
+		letter-spacing: 0.02em;
+		color: var(--ink);
+		text-decoration: underline 1.5px var(--hairline);
+		text-underline-offset: 0.25em;
+	}
+
+	.tagline {
+		margin: calc(1.6 * var(--unit)) 0 0 !important;
+		font: italic 450 calc(3.4 * var(--unit)) / 1.2 var(--face-display);
+		color: var(--quiet);
 	}
 
 	/* the line: mdsvex and its edition at one size, centred, never wrapped */
