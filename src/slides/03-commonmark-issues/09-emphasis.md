@@ -9,6 +9,7 @@ notes: |
   The second is emphasis: `*` reaches inside a word, `_` doesn't.
   → PFM: a delimiter only opens after space or punctuation, so neither does.
   Inside a word you mark the boundary with |, which isn't rendered.
+  Say it: the CommonMark spec needs seventeen numbered rules to say what emphasis is.
 ---
 
 ```text
