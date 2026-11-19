@@ -2,7 +2,7 @@
 name: Code that runs
 size: small
 rubric: Live code blocks · run
-title: Code you can click.
+title: Code blocks that run.
 notes: |
   A fence marked run is shown as code and is also a module the page imports. It is a real
   module in the Vite graph: TypeScript is compiled, a Svelte block is compiled by

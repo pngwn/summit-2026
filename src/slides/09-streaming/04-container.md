@@ -1,8 +1,8 @@
 ---
-name: Committed early
+name: Container directives
 size: small
 rubric: Streaming · directives
-title: Committed at the first line.
+title: Container directives commit early.
 notes: |
   A container directive is committed the moment its opening line ends: open
   directive_container, not pending. Its closing ::: hasn't arrived and may be pages away,

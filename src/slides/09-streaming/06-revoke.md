@@ -1,8 +1,8 @@
 ---
-name: Taken back
+name: Revoking a guess
 size: small
 rubric: Streaming · revocation
-title: A wrong guess, taken back.
+title: Revoking a guess undoes plugins.
 notes: |
   A plugin that marks every emphasis the moment it opens, and counts it in its data:
   emphasis: { parse(node, ctx) { node.attrs.class = 'marked'; ctx.add('marked', ...) } }

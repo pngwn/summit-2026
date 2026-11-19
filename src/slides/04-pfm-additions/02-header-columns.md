@@ -1,7 +1,7 @@
 ---
 name: Header columns
 rubric: PFM · tables
-title: Headers down the side, too.
+title: Table header columns.
 notes: |
   A double pipe ends the header columns: cells to the left of it are headers for their
   row, rendered as th with scope="row". The delimiter row carries the || too.

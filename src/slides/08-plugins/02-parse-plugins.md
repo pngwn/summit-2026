@@ -2,7 +2,7 @@
 name: Parse plugins
 size: small
 rubric: Plugin API · parse plugins
-title: Change the tree as it's read.
+title: Parse plugins edit the tree.
 notes: |
   A parse plugin is an object keyed by node type. parse(node) runs as the parser opens
   the node; return a function and it runs when the node closes, once everything inside

@@ -1,9 +1,9 @@
 ---
 chapter: Streaming
-name: Read as it arrives
+name: Parsing a stream
 size: small
 rubric: Streaming
-title: Read as it arrives.
+title: Parsing a stream.
 notes: |
   Play or drag the range to inspect the document at each character. Every frame is mdsvex's
   own incremental parser, run in the browser right now, a character at a time.

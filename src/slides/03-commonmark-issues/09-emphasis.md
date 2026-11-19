@@ -2,7 +2,7 @@
 template: diff
 name: Emphasis inside a word
 rubric: Ambiguity · emphasis
-title: A mark inside a word.
+title: Emphasis inside a word.
 steps: 3
 notes: |
   (Fences are plain text: the markdown highlighter italicises _case_ in snake_case_name.)

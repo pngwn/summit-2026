@@ -1,8 +1,8 @@
 ---
 chapter: Plugin system
-name: Giving a directive meaning
+name: The callouts plugin
 rubric: Plugin system · callouts
-title: Give a name a meaning.
+title: A directive rendered by a plugin.
 notes: |
   The parser recognises a container directive. The callouts plugin knows what note means
   and supplies its presentation. Other plugins can handle constructs at parse or compile

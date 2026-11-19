@@ -2,7 +2,7 @@
 name: Directive plugins
 size: small
 rubric: Plugin API · directive plugins
-title: Claim a directive.
+title: 'A directive plugin: steps.'
 notes: |
   A plugin can claim a directive by name, with the components that render it. Its
   handlers run only inside that directive, on the markdown written there as children.

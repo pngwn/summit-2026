@@ -1,8 +1,8 @@
 ---
 chapter: Editor tooling
-name: The working desk
+name: Editor support
 rubric: Editor tooling
-title: At the writing desk.
+title: Editor support.
 notes: |
   Walk through your editing setup. Zed is marked in progress as in the talk outline.
 ---

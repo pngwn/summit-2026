@@ -1,7 +1,7 @@
 ---
 name: Lists and footnotes
 rubric: PFM · lists & footnotes
-title: A plan with a footnote.
+title: Task lists and footnotes.
 notes: |
   A plain unordered list can contain task items.
   Numbered footnote references lead to the collected definitions.

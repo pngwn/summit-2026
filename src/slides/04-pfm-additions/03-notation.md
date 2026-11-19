@@ -1,7 +1,7 @@
 ---
-name: Small notation
+name: Superscript, subscript, math
 rubric: PFM · inline notation
-title: Above, below, across.
+title: Superscript, subscript, math.
 notes: |
   Superscript, subscript and strikethrough each have a compact spelling.
   Inline math wraps a code span in dollar signs.

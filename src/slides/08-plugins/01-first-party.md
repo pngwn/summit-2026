@@ -3,7 +3,7 @@ chapter: Plugins
 name: First-party plugins
 size: small
 rubric: Plugin system · first party
-title: One line each.
+title: First-party plugins.
 notes: |
   The first-party plugins are packages of their own, @mdsvex/plugin-*. Each exports a
   function, and what it returns goes in the plugins option, in the order they should run.

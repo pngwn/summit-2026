@@ -1,8 +1,8 @@
 ---
-name: Holding back
+name: Opcodes and lookahead
 size: small
-rubric: Streaming · the wire
-title: What it can't know yet, it holds.
+rubric: Streaming · opcodes
+title: Opcodes and lookahead.
 notes: |
   The parser speaks in opcodes over a wire: open, text, attr, close, commit, revoke.
   The shaded source is what it has been fed but not yet read for certain: its lookahead.

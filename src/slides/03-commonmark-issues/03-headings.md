@@ -2,7 +2,7 @@
 template: diff
 name: Headings
 rubric: Many ways · headings
-title: How many ways to say it?
+title: Three ways to write a heading.
 notes: |
   ATX, ATX with closing hashes, and setext: CommonMark reads all three as the same h1.
   Setext also makes `---` mean two things: an h2 underline or a thematic break.

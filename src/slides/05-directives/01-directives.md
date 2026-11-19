@@ -2,7 +2,7 @@
 chapter: Generic directives
 name: Generic directives
 rubric: Generic directives
-title: One colon at a time.
+title: Three kinds of directive.
 notes: |
   A directive has a name, an optional label and optional arguments in parentheses.
   Show the difference in scope. In an actual container the closing ::: is on its own line.

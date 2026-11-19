@@ -1,8 +1,8 @@
 ---
 name: A recipe blog
 size: tiny
-rubric: Examples · a recipe blog
-title: Write it once, where it's used.
+rubric: Examples
+title: A recipe blog.
 notes: |
   A recipe written in svx. Every ingredient is written in the method, where it is used:
   :ingredient[flour](qty=200, unit=g). The ingredients plugin claims the directive and adds

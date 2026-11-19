@@ -2,8 +2,8 @@
 chapter: Examples
 name: A travel journal
 size: tiny
-rubric: Examples · a travel journal
-title: A map that follows the reader.
+rubric: Examples
+title: A travel journal.
 notes: |
   A journal written in svx: each stop is a container directive, :::travel[Place] with its
   coordinates. The travel plugin claims the directive, and as each one closes adds its name

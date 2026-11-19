@@ -1,8 +1,8 @@
 ---
 chapter: Migration
-name: From layout to template
-rubric: Migration · from 0.x
-title: From layout to template.
+name: Migrating from 0.x
+rubric: Migration · layout becomes template
+title: Migrating from 0.x.
 notes: |
   Use migrate_config and migrate_document for the rewrites. check_template reports work
   in layout components. Walk through the frontmatter rename here, then mention how to

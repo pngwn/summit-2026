@@ -2,7 +2,7 @@
 template: diff
 name: Code blocks
 rubric: Many ways · code blocks
-title: Fenced, or just indented?
+title: Two ways to write a code block.
 notes: |
   A fence and an indented block are the same thing in CommonMark.
   Significant indentation is what makes nesting in lists so hard to get right.

@@ -2,7 +2,7 @@
 template: diff
 name: Emphasis marks
 rubric: Ambiguity · emphasis
-title: Stars, or underscores?
+title: Two spellings for emphasis.
 notes: |
   `*` and `_` are interchangeable in CommonMark, so each kind has two spellings.
   → PFM: `_` is emphasis, `*` is strong, never interchangeable.

@@ -2,7 +2,7 @@
 template: diff
 name: An invisible hard break
 rubric: Invisible syntax · line breaks
-title: Can you see the break?
+title: Hard line breaks.
 steps: 3
 reveal: 1
 notes: |
