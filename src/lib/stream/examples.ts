@@ -1,5 +1,5 @@
 // The documents the streaming slides feed through the parser, and the plugins they use.
-// A slide picks one by name: ::stream(example=links)
+// A slide picks one by name: ::stream(example=arrives)
 import type { ParsePlugin } from '@mdsvex/parse';
 
 /**
@@ -35,12 +35,10 @@ export interface Example {
 }
 
 export const examples: Record<string, Example> = {
-	// the first scrub: a heading, then emphasis arriving
-	plan: { source: '# The plan\n\nWin one _town_.' },
-
-	// more markup: a link, strong, a footnote reference and its definition
-	links: {
-		source: 'Read [the docs](https://mdsvex.com) *first*.[^1]\n\n[^1]: Then the _source_.\n'
+	// the first scrub: a heading, emphasis, then a link, strong and a footnote arriving
+	arrives: {
+		source:
+			'# The plan\n\nWin one _town_. Read [the docs](https://mdsvex.com) *first*.[^1]\n\n[^1]: Then the _source_.\n'
 	},
 
 	// a container directive: committed the moment its opening line ends

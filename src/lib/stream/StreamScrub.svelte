@@ -1,5 +1,5 @@
 <!--
-	::stream(example=links, panels="ops data") — a document read as it arrives, through
+	::stream(example=arrives, panels="ops data") — a document read as it arrives, through
 	mdsvex's own incremental parser (engine.ts). Incoming source on the left, with the
 	lookahead the parser is still holding shaded; the page so far on the right, guesses
 	dashed. Panels, as a slide asks for them:
@@ -20,12 +20,12 @@
 	import TreeView from './TreeView.svelte';
 
 	let {
-		example = 'plan',
+		example = 'arrives',
 		panels = '',
 		speed = '145'
 	}: { example?: string; panels?: string; speed?: string } = $props();
 
-	const ex = $derived(examples[example] ?? examples.plan);
+	const ex = $derived(examples[example] ?? examples.arrives);
 	const show = $derived(new Set(panels.split(/[\s,]+/).filter(Boolean)));
 
 	let frames = $state<Frame[]>([]);
