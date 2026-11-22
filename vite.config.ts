@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import * as svx from '@twinkleplop/mdsvex';
 import { mdsvex } from 'mdsvex';
@@ -53,10 +53,11 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-			// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-			adapter: adapter()
+			// every page is prerendered, so the deck builds to plain files in build/, which
+			// wrangler.jsonc serves as static assets on Cloudflare: no Worker, nothing to run
+			// an address that isn't a page gets the app shell, whose routing sends an unknown
+			// scene to the cover
+			adapter: adapter({ fallback: '404.html' })
 		})
 	]
 });

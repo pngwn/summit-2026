@@ -1,0 +1,12 @@
+{
+	// The deck is fully prerendered (adapter-static writes build/), so Cloudflare serves the
+	// files as static assets. With this file present, `wrangler deploy` uses it as written
+	// instead of trying to configure the project itself.
+	"$schema": "https://unpkg.com/wrangler/config-schema.json",
+	"name": "summit-2026",
+	"compatibility_date": "2026-11-19",
+	"assets": {
+		"directory": "./build",
+		"not_found_handling": "404-page"
+	}
+}
