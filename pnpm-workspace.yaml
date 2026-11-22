@@ -1,3 +1,7 @@
+# a workspace of one package: pnpm 9 requires the list, pnpm 10 reads the settings below
+packages:
+  - '.'
+
 engineStrict: true
 onlyBuiltDependencies:
   - esbuild
